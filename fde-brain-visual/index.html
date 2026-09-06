@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FDE 数字员工大脑 · 可视化首页</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg-0);
+    color: var(--fg-1);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :root {
+    --bg-0: #0a0e14; --bg-1: #0f151d; --bg-2: #141c26; --bg-3: #1a2432;
+    --fg-0: #e6edf3; --fg-1: #c9d4df; --fg-2: #8b98a9; --fg-3: #5a6879;
+    --accent: #5eead4; --accent-dim: #2dd4bf33; --accent-line: #2dd4bf55;
+    --ok: #34d399; --warn: #fbbf24; --new: #a78bfa; --risk: #f87171;
+    --line-0: #1e293b; --line-1: #273449; --line-2: #334155;
+    --grid-color: #1e293b55;
+    --font-display: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  }
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(--sp-8); }
+
+  .drawing-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--line-1);
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    position: sticky; top: 0;
+    background: rgba(10, 14, 20, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    margin-bottom: var(--sp-7);
+  }
+  .drawing-header .left, .drawing-header .right { display: flex; gap: var(--sp-5); align-items: center; }
+  .drawing-header .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok); display: inline-block;
+    box-shadow: 0 0 8px var(--ok);
+  }
+
+  .hero { text-align: center; padding: var(--sp-8) 0 var(--sp-6); }
+  .hero h1 { font-family: var(--font-display); font-size: 56px; font-weight: 700; color: var(--fg-0); letter-spacing: 0.02em; line-height: 1.12; }
+  .hero h1 span { color: var(--accent); }
+  .hero .slogan { color: var(--fg-2); font-size: 18px; margin-top: var(--sp-4); max-width: 62ch; margin-left: auto; margin-right: auto; }
+  .hero .badges { margin-top: var(--sp-5); }
+  .badge {
+    display: inline-block; margin: 0 6px; padding: 4px 14px;
+    border: 1px solid var(--line-2); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-2);
+  }
+  .badge.b { color: var(--accent); border-color: var(--accent-line); }
+
+  .section-title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--fg-0);
+    margin: var(--sp-7) 0 var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--line-1);
+    position: relative;
+  }
+  .section-title::before {
+    content: ''; position: absolute; left: 0; bottom: -1px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .section-title .sub { display: block; font-size: 12px; font-weight: 400; color: var(--fg-3); font-family: var(--font-mono); letter-spacing: 0.06em; margin-bottom: 4px; }
+
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .kpi-card { background: var(--bg-1); border: 1px solid var(--line-1); border-left: 3px solid var(--accent); border-radius: 8px; padding: var(--sp-4) var(--sp-5); }
+  .kpi-card .kpi-num { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--fg-0); }
+  .kpi-card .kpi-num small { font-size: 14px; color: var(--fg-3); font-weight: 400; }
+  .kpi-card .kpi-label { font-size: 12px; color: var(--fg-2); margin-top: 4px; letter-spacing: 0.04em; }
+  .kpi-card.delta { border-left-color: var(--ok); }
+
+  .card { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-5); transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .card h3 { color: var(--fg-0); font-family: var(--font-display); margin-bottom: var(--sp-3); }
+  .card p { color: var(--fg-2); font-size: 14px; }
+  .lead { border-left: 3px solid var(--accent); padding: var(--sp-3) var(--sp-4); background: var(--accent-dim); color: var(--fg-0); font-size: 15px; margin: var(--sp-4) 0; border-radius: 0 6px 6px 0; }
+
+  /* 大脑架构 */
+  .brain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .brain-card { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-5); position: relative; overflow: hidden; }
+  .brain-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent 70%); opacity: 0.5; }
+  .brain-card .b-tag { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; }
+  .brain-card h3 { color: var(--fg-0); font-family: var(--font-display); font-size: 17px; margin: var(--sp-2) 0 var(--sp-2); }
+  .brain-card p { color: var(--fg-2); font-size: 13px; }
+  .brain-card .b-items { margin-top: var(--sp-3); display: flex; flex-direction: column; gap: 6px; }
+  .brain-card .b-items span { font-family: var(--font-mono); font-size: 11.5px; color: var(--fg-2); border: 1px solid var(--line-2); border-radius: 6px; padding: 3px 10px; display: inline-block; align-self: flex-start; }
+
+  /* 四件套 */
+  .flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .flow-step { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-4) var(--sp-5); }
+  .flow-step .step-no { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: var(--sp-2); display: block; }
+  .flow-step h4 { color: var(--fg-0); font-family: var(--font-display); font-size: 15px; margin-bottom: var(--sp-2); }
+  .flow-step p { color: var(--fg-2); font-size: 13px; }
+  .flow-step .g-tag { font-family: var(--font-mono); font-size: 11px; color: var(--new); display: block; margin-bottom: var(--sp-1); }
+
+  /* 时间轴 */
+  .timeline { list-style: none; margin-top: var(--sp-4); }
+  .timeline li { position: relative; padding: 0 0 var(--sp-5) var(--sp-6); border-left: 1px solid var(--line-2); }
+  .timeline li::before { content: ''; position: absolute; left: -5px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .timeline li.done::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .timeline li.next::before { background: var(--new); box-shadow: 0 0 8px var(--new); }
+  .timeline .t-phase { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); }
+  .timeline .t-title { color: var(--fg-0); font-weight: 600; }
+  .timeline .t-desc { color: var(--fg-2); font-size: 13px; margin-top: 2px; }
+
+  .list { list-style: none; margin: var(--sp-4) 0; }
+  .list li { position: relative; padding: 0 0 var(--sp-4) var(--sp-5); border-left: 1px solid var(--line-2); color: var(--fg-1); }
+  .list li::before { content: ''; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .list li b { color: var(--fg-0); }
+  .list li .ds { color: var(--fg-2); font-size: 13.5px; margin-top: 2px; display: block; }
+
+  .foot { text-align: center; margin-top: var(--sp-8); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 34px; }
+    .page-wrap { padding: var(--sp-4); }
+    .section-title { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 蓝图页眉 -->
+  <div class="drawing-header">
+    <div class="left"><span>FDE Digital Brain</span><span class="status-dot"></span><span>前场交付工程师数字员工</span></div>
+    <div class="right"><span>Visualization · V-04</span></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>FDE 数字员工大脑<br><span>前场交付工程师</span></h1>
+    <p class="slogan">以前场交付工程师（FDE）岗位能力模型为蓝本构建的数字员工大脑——50% 技术深度 + 30% 业务翻译力 + 20% 抗压交付，以可运行、可复现、可验收的形态承载完整交付能力。</p>
+    <div class="badges">
+      <span class="badge b">数字员工大脑</span>
+      <span class="badge">50/30/20 能力模型</span>
+      <span class="badge">G1–G4 执行器官</span>
+      <span class="badge">14 步思维管线</span>
+    </div>
+  </section>
+
+  <!-- 使用场景 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · USE SCENARIO</span>使用场景</h2>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="step-no">SC-01</span><h4>赋能谁</h4><p>交付工程师（FDE）与客户现场交付团队——直面陌生客户数据、现场环境与交付时限的人。</p></div>
+      <div class="flow-step"><span class="step-no">SC-02</span><h4>什么场景</h4><p>客户现场交付：数据清洗适配、价值汇报、故障兜底、交接文档全靠人肉，周期长、易出错、不可复现。</p></div>
+      <div class="flow-step"><span class="step-no">SC-03</span><h4>解决什么</h4><p>四件套把交付流程自动化：改配置适配任意行业数据、技术指标自动翻译为业务价值、故障自动降级回滚、交接文档自动生成。</p></div>
+      <div class="flow-step"><span class="step-no">SC-04</span><h4>带来什么</h4><p>数天人工劳作 → 可复现的自动化流水线；交付可运行、可复现、可验收，客户现场从「救火」变为「照单执行」。</p></div>
+    </div>
+  </section>
+
+  <!-- 关键指标 -->
+  <section>
+    <h2 class="section-title"><span class="sub">01 · KEY METRICS</span>关键指标</h2>
+    <div class="kpi-strip">
+      <div class="kpi-card"><div class="kpi-num">50/30/20<small> 能力配比</small></div><div class="kpi-label">技术 / 业务 / 抗压</div></div>
+      <div class="kpi-card"><div class="kpi-num">G1–G4<small> 执行器官</small></div><div class="kpi-label">能力四件套</div></div>
+      <div class="kpi-card"><div class="kpi-num">14<small> 步</small></div><div class="kpi-label">思维管线</div></div>
+      <div class="kpi-card"><div class="kpi-num">5<small> 条</small></div><div class="kpi-label">硬性验收</div></div>
+      <div class="kpi-card delta"><div class="kpi-num">近 200<small> 文件</small></div><div class="kpi-label">工程资产</div></div>
+    </div>
+  </section>
+
+  <!-- 大脑架构 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · BRAIN ARCHITECTURE</span>数字员工大脑架构</h2>
+    <p style="color:var(--fg-2); margin-bottom:var(--sp-3);">大脑以岗位能力模型为蓝本，由知识底座、决策中枢、执行器官与沉淀机制四脑区构成，形成「认知 → 决策 → 执行 → 沉淀」的完整闭环。</p>
+    <div class="brain-grid">
+      <div class="brain-card">
+        <span class="b-tag">记忆区 · MEMORY</span>
+        <h3>知识底座</h3>
+        <p>大脑的记忆系统——岗位认知库、交付旅程方法论与蒸馏资产，是大脑一切判断与产出的口径来源。</p>
+        <div class="b-items"><span>FDE 岗位认知库</span><span>Guidance Book 交付旅程</span><span>蒸馏资产</span></div>
+      </div>
+      <div class="brain-card">
+        <span class="b-tag">皮层区 · CORTEX</span>
+        <h3>决策中枢</h3>
+        <p>大脑的思考系统——产品经理脑区装入知识后，以四视角评审做决策；编排器按路由表分派并设产品闸门。</p>
+        <div class="b-items"><span>fde-pm 产品经理脑区</span><span>四视角评审</span><span>路由表 + 产品闸门</span></div>
+      </div>
+      <div class="brain-card">
+        <span class="b-tag">效应区 · EFFECTORS</span>
+        <h3>执行器官</h3>
+        <p>大脑的行动系统——四件套工具将决策落为可运行产物：数据适配、价值度量、故障逃生、交接生成。</p>
+        <div class="b-items"><span>G1 数据适配器</span><span>G2 价值度量</span><span>G3 故障逃生舱</span><span>G4 交接生成器</span></div>
+      </div>
+      <div class="brain-card">
+        <span class="b-tag">海马区 · HIPPOCAMPUS</span>
+        <h3>沉淀机制</h3>
+        <p>大脑的学习系统——知识蒸馏者持续把执行经验蒸馏为方法论，回写知识底座，让大脑随交付持续进化。</p>
+        <div class="b-items"><span>knowledge-keeper 知识蒸馏者</span><span>方法论回写</span><span>持续进化</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 能力四件套 -->
+  <section>
+    <h2 class="section-title"><span class="sub">03 · CAPABILITY KIT</span>能力四件套</h2>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="g-tag">G1 · 技术深度</span><span class="step-no">DATA-ADAPTER</span><h4>通用数据适配器</h4><p>改一行配置适配任意行业数据，零代码改动——把技术深度做成配置化交付。</p></div>
+      <div class="flow-step"><span class="g-tag">G2 · 业务翻译力</span><span class="step-no">VALUE-METER</span><h4>价值度量</h4><p>把技术指标翻译成决策者看得懂的价值：省时、省人、准确率。</p></div>
+      <div class="flow-step"><span class="g-tag">G3 · 抗压交付</span><span class="step-no">ESCAPE-POD</span><h4>故障逃生舱</h4><p>服务故障自动降级 → 恢复回滚，未知故障有兜底——交付中的生存能力。</p></div>
+      <div class="flow-step"><span class="g-tag">G4 · 交付闭环</span><span class="step-no">HANDOVER-GEN</span><h4>交接生成器</h4><p>自动生成运维手册 / FAQ / 冒烟清单——交付不是结束，交接才是闭环。</p></div>
+    </div>
+  </section>
+
+  <!-- 思维管线 -->
+  <section>
+    <h2 class="section-title"><span class="sub">04 · THINKING PIPELINE</span>14 步思维管线</h2>
+    <p style="color:var(--fg-2); margin-bottom:var(--sp-3);">大脑把一个大目标拆成可并行、可验收的交付管线——每一步有强制前置与验收标准。</p>
+    <ul class="timeline">
+      <li class="done">
+        <div class="t-phase">PHASE 1 · 准备</div>
+        <div class="t-title">目标与口径锁定</div>
+        <div class="t-desc">梳理指令、锁定岗位能力口径，建立可验收的目标定义</div>
+      </li>
+      <li class="done">
+        <div class="t-phase">PHASE 2 · 并行开发</div>
+        <div class="t-title">三组件并行产出</div>
+        <div class="t-desc">核心能力组件并行开发，各自带测试与验收标准</div>
+      </li>
+      <li class="done">
+        <div class="t-phase">PHASE 3 · 合并</div>
+        <div class="t-title">集成与归一</div>
+        <div class="t-desc">并行产物合并为统一交付体，消除接口与口径分歧</div>
+      </li>
+      <li class="done">
+        <div class="t-phase">PHASE 4 · 三层验收</div>
+        <div class="t-title">多级验证</div>
+        <div class="t-desc">功能验收 → 场景验收 → 复现验收，逐层过门</div>
+      </li>
+      <li class="next">
+        <div class="t-phase">PHASE 5 · 终验</div>
+        <div class="t-title">硬指标终验</div>
+        <div class="t-desc">5 条硬指标全量 PASS——可运行、可复现、可验收的自证闭环</div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 大脑闭环 -->
+  <section>
+    <h2 class="section-title"><span class="sub">05 · BRAIN LOOP</span>大脑的完整闭环</h2>
+    <div class="card">
+      <p>数字员工大脑以<b style="color:var(--fg-0)">认知 → 决策 → 执行 → 沉淀</b>的闭环持续运转：</p>
+    </div>
+    <ul class="list">
+      <li><b>认知</b><span class="ds">知识底座提供岗位口径与方法论——大脑知道「该怎么做」。</span></li>
+      <li><b>决策</b><span class="ds">产品经理脑区四视角评审、编排器路由与闸门——大脑决定「做什么、由谁做」。</span></li>
+      <li><b>执行</b><span class="ds">四件套执行器官产出可运行、可验证的交付物——大脑兑现「做出来」。</span></li>
+      <li><b>沉淀</b><span class="ds">知识蒸馏者把执行经验回写知识库——大脑完成「越用越强」的进化闭环。</span></li>
+    </ul>
+    <div class="lead">大脑的走向是成为持续进化的交付智能体：每一次交付都在扩充记忆、强化决策、打磨执行，让 FDE 能力从「人做」演进为「数字员工大脑自主运转」。</div>
+  </section>
+
+  <p class="foot">FDE DIGITAL BRAIN · VISUALIZATION · 50/30/20 CAPABILITY MODEL</p>
+</div>
+</body>
+</html>

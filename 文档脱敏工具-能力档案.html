@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文档脱敏工具 · 工程能力档案</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg-0);
+    color: var(--fg-1);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :root {
+    --bg-0: #0a0e14; --bg-1: #0f151d; --bg-2: #141c26; --bg-3: #1a2432;
+    --fg-0: #e6edf3; --fg-1: #c9d4df; --fg-2: #8b98a9; --fg-3: #5a6879;
+    --accent: #5eead4; --accent-dim: #2dd4bf33; --accent-line: #2dd4bf55;
+    --ok: #34d399; --warn: #fbbf24; --new: #a78bfa; --risk: #f87171;
+    --line-0: #1e293b; --line-1: #273449; --line-2: #334155;
+    --grid-color: #1e293b55;
+    --font-display: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  }
+  .page-wrap { max-width: 1080px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(--sp-8); }
+
+  .drawing-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--line-1);
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    position: sticky; top: 0;
+    background: rgba(10, 14, 20, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    margin-bottom: var(--sp-7);
+  }
+  .drawing-header .left, .drawing-header .right { display: flex; gap: var(--sp-5); align-items: center; }
+  .drawing-header .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok); display: inline-block;
+    box-shadow: 0 0 8px var(--ok);
+  }
+
+  .hero { text-align: center; padding: var(--sp-8) 0 var(--sp-6); }
+  .hero h1 { font-family: var(--font-display); font-size: 52px; font-weight: 700; color: var(--fg-0); letter-spacing: 0.02em; line-height: 1.15; }
+  .hero h1 span { color: var(--accent); }
+  .hero .slogan { color: var(--fg-2); font-size: 17px; margin-top: var(--sp-4); max-width: 54ch; margin-left: auto; margin-right: auto; }
+  .hero .badges { margin-top: var(--sp-5); }
+  .badge {
+    display: inline-block; margin: 0 6px; padding: 4px 14px;
+    border: 1px solid var(--line-2); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-2);
+  }
+  .badge.b { color: var(--accent); border-color: var(--accent-line); }
+
+  .section-title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--fg-0);
+    margin: var(--sp-7) 0 var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--line-1);
+    position: relative;
+  }
+  .section-title::before {
+    content: ''; position: absolute; left: 0; bottom: -1px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .section-title .sub { display: block; font-size: 12px; font-weight: 400; color: var(--fg-3); font-family: var(--font-mono); letter-spacing: 0.06em; margin-bottom: 4px; }
+
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .kpi-card { background: var(--bg-1); border: 1px solid var(--line-1); border-left: 3px solid var(--accent); border-radius: 8px; padding: var(--sp-4) var(--sp-5); }
+  .kpi-card .kpi-num { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--fg-0); }
+  .kpi-card .kpi-num small { font-size: 14px; color: var(--fg-3); font-weight: 400; }
+  .kpi-card .kpi-label { font-size: 12px; color: var(--fg-2); margin-top: 4px; letter-spacing: 0.04em; }
+  .kpi-card.delta { border-left-color: var(--ok); }
+
+  .card { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-5); transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .card h3 { color: var(--fg-0); font-family: var(--font-display); margin-bottom: var(--sp-3); }
+  .card p { color: var(--fg-2); font-size: 14px; }
+  .lead { border-left: 3px solid var(--accent); padding: var(--sp-3) var(--sp-4); background: var(--accent-dim); color: var(--fg-0); font-size: 15px; margin: var(--sp-4) 0; border-radius: 0 6px 6px 0; }
+
+  .flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .flow-step { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-4) var(--sp-5); }
+  .flow-step .step-no { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: var(--sp-2); display: block; }
+  .flow-step h4 { color: var(--fg-0); font-family: var(--font-display); font-size: 15px; margin-bottom: var(--sp-2); }
+  .flow-step p { color: var(--fg-2); font-size: 13px; }
+
+  .timeline { list-style: none; margin-top: var(--sp-4); }
+  .timeline li { position: relative; padding: 0 0 var(--sp-5) var(--sp-6); border-left: 1px solid var(--line-2); }
+  .timeline li::before { content: ''; position: absolute; left: -5px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .timeline li.done::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .timeline li.next::before { background: var(--new); box-shadow: 0 0 8px var(--new); }
+  .timeline .t-phase { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); }
+  .timeline .t-title { color: var(--fg-0); font-weight: 600; }
+  .timeline .t-desc { color: var(--fg-2); font-size: 13px; margin-top: 2px; }
+
+  .list { list-style: none; margin: var(--sp-4) 0; }
+  .list li { position: relative; padding: 0 0 var(--sp-4) var(--sp-5); border-left: 1px solid var(--line-2); color: var(--fg-1); }
+  .list li::before { content: ''; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .list li b { color: var(--fg-0); }
+  .list li .ds { color: var(--fg-2); font-size: 13.5px; margin-top: 2px; display: block; }
+
+  .tag { display: inline-block; padding: 2px 12px; border: 1px solid var(--accent-line); border-radius: 999px; font-size: 12px; font-family: var(--font-mono); color: var(--accent); background: var(--accent-dim); margin: 2px 4px 2px 0; }
+  .tag.plain { border-color: var(--line-2); color: var(--fg-2); background: transparent; }
+
+  .foot { text-align: center; margin-top: var(--sp-8); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 34px; }
+    .page-wrap { padding: var(--sp-4); }
+    .section-title { font-size: 19px; }
+    .flow-steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 蓝图页眉 -->
+  <div class="drawing-header">
+    <div class="left"><span>Capability Portfolio</span><span class="status-dot"></span><span>本地留存 · 量级口径</span></div>
+    <div class="right"><span>No. 03 · 隐私保护工具</span></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>文档脱敏工具<br><span>隐私保护工程实践</span></h1>
+    <p class="slogan">面向文档隐私保护的工程化工具：上传文档 → 识别其中的敏感信息（密钥、凭据、行业字段）→ 确认脱敏 → 产出脱敏文档与可追溯映射，LLM 辅助识别且可本地部署。</p>
+    <div class="badges">
+      <span class="badge b">隐私保护</span>
+      <span class="badge">LLM 辅助识别</span>
+      <span class="badge">双通道设计</span>
+      <span class="badge">AI 工程化开发</span>
+    </div>
+  </section>
+
+  <!-- 关键指标 -->
+  <section>
+    <h2 class="section-title"><span class="sub">01 · KEY METRICS</span>关键指标</h2>
+    <div class="kpi-strip">
+      <div class="kpi-card"><div class="kpi-num">端到端<small> 流程</small></div><div class="kpi-label">上传 → 脱敏 → 产出</div></div>
+      <div class="kpi-card"><div class="kpi-num">近 80 项<small> 测试基线</small></div><div class="kpi-label">质量保障</div></div>
+      <div class="kpi-card"><div class="kpi-num">双通道<small> 识别</small></div><div class="kpi-label">规则引擎 + LLM</div></div>
+      <div class="kpi-card delta"><div class="kpi-num">零落库<small> 设计</small></div><div class="kpi-label">会话级处理</div></div>
+    </div>
+  </section>
+
+  <!-- 项目定位 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · POSITION</span>项目定位</h2>
+    <div class="card">
+      <p>面向文档隐私保护场景的<b style="color:var(--fg-0)">脱敏工具</b>：把含有敏感信息的文档转换为可安全外发/共享的版本，同时保留可追溯的映射关系。核心价值在于「识得准、脱得净、可追溯」——敏感项被替换为随机串，映射关系留档供需要时还原。</p>
+      <div class="lead">隐私保护的工程落点：不是简单地替换字符，而是让「识别 → 确认 → 脱敏 → 审计」成为一条闭环、可控、可信的流水线。</div>
+    </div>
+  </section>
+
+  <!-- 工程方法论 -->
+  <section>
+    <h2 class="section-title"><span class="sub">03 · METHODOLOGY</span>工程方法论</h2>
+    <p style="color:var(--fg-2); margin-bottom:var(--sp-3);">贯穿设计、开发与交付的思考方式——可迁移、可复用。</p>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="step-no">M-01</span><h4>闭环设计，防漏可追溯</h4><p>识别 → 人工确认 → 脱敏 → 映射留档 → 审计，每一步都有据可查。脱敏不是一次性替换，而是可解释、可还原、可审计的完整闭环。</p></div>
+      <div class="flow-step"><span class="step-no">M-02</span><h4>规则 + LLM 双通道</h4><p>确定性规则引擎保证覆盖率与可复现，LLM 辅助识别提升对非结构化敏感信息的发现能力；两者可离线、可切换，不绑定单一模型。</p></div>
+      <div class="flow-step"><span class="step-no">M-03</span><h4>隐私优先的架构</h4><p>会话级临时处理、不落库、可本地/内网部署——工具自身的架构同样遵循隐私最小化原则，处理的数据不被留存、不被外发。</p></div>
+      <div class="flow-step"><span class="step-no">M-04</span><h4>AI 工程化开发方式</h4><p>以多 Agent 团队（诊断 / 实现 / 验证）+ Skill 工程（计划 / 报告）+ 三道门控流水线完成开发——把 AI 从辅助工具推进为可编排、可治理的开发流程。</p></div>
+      <div class="flow-step"><span class="step-no">M-05</span><h4>前后端工程化</h4><p>现代前端框架 + 服务端分层架构，静态构建、容器化部署，面向内网环境的完整交付链路。</p></div>
+      <div class="flow-step"><span class="step-no">M-06</span><h4>质量先行</h4><p>自动化测试基线随功能同步演进，每次改动有可复现的验证手段；环境受限时如实标注，不掩盖验证缺口。</p></div>
+    </div>
+  </section>
+
+  <!-- 能力体现 -->
+  <section>
+    <h2 class="section-title"><span class="sub">04 · CAPABILITY</span>能力与技术素养</h2>
+    <div style="margin: var(--sp-4) 0;">
+      <span class="tag">隐私保护设计</span><span class="tag">规则引擎</span><span class="tag">LLM 接入</span><span class="tag">前端工程</span><span class="tag">后端服务</span><span class="tag">容器化部署</span>
+      <span class="tag plain">测试驱动</span><span class="tag plain">文档驱动</span><span class="tag plain">AI 多 Agent 编排</span><span class="tag plain">Skill 工程</span>
+    </div>
+    <ul class="list">
+      <li><b>隐私保护产品化</b><span class="ds">从需求到可部署系统：文档处理、敏感识别、确认交互、映射管理、审计留档的完整产品闭环。</span></li>
+      <li><b>AI 工程化实践</b><span class="ds">用多 Agent 团队 + Skill 工程 + 门控流水线组织开发——诊断、实现、验证角色分离，计划与报告结构可校验。</span></li>
+      <li><b>模型无关的 LLM 集成</b><span class="ds">走兼容协议接入，本地可运行、可切换服务商，不绑定单一模型厂商。</span></li>
+      <li><b>工程素养</b><span class="ds">测试先行、文档同步、容器化交付、隐私最小化架构——从代码到交付物都遵循同一套标准。</span></li>
+    </ul>
+  </section>
+
+  <!-- 档案说明 -->
+  <section>
+    <h2 class="section-title"><span class="sub">05 · NOTE</span>档案说明</h2>
+    <div class="card">
+      <p>本档案为能力与思维方法的表达；所有规模与数量均为量级口径，不涉及精确数据；不包含项目内部实现细节与专属信息；代码本体保持私有。</p>
+    </div>
+  </section>
+
+  <p class="foot">CAPABILITY PORTFOLIO · 本地留存 · 量级口径表达</p>
+</div>
+</body>
+</html>

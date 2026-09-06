@@ -1,0 +1,6 @@
+# 独立公开仓库（线上已有 GitHub 仓库与 Pages，不重复上传）
+ontology-brain-visual/
+skill-flow-viz/
+
+# 系统文件
+.DS_Store

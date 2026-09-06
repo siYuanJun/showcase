@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Index · 工程作品索引</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg-0);
+    color: var(--fg-1);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :root {
+    --bg-0: #0a0e14; --bg-1: #0f151d; --bg-2: #141c26; --bg-3: #1a2432;
+    --fg-0: #e6edf3; --fg-1: #c9d4df; --fg-2: #8b98a9; --fg-3: #5a6879;
+    --accent: #5eead4; --accent-dim: #2dd4bf33; --accent-line: #2dd4bf55;
+    --ok: #34d399; --warn: #fbbf24; --new: #a78bfa; --risk: #f87171;
+    --line-0: #1e293b; --line-1: #273449; --line-2: #334155;
+    --grid-color: #1e293b55;
+    --font-display: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  }
+  .page-wrap { max-width: 1080px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(--sp-8); }
+
+  .drawing-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--line-1);
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    position: sticky; top: 0;
+    background: rgba(10, 14, 20, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    margin-bottom: var(--sp-7);
+  }
+  .drawing-header .left, .drawing-header .right { display: flex; gap: var(--sp-5); align-items: center; }
+  .drawing-header .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok); display: inline-block;
+    box-shadow: 0 0 8px var(--ok);
+  }
+
+  .hero { text-align: center; padding: var(--sp-8) 0 var(--sp-6); }
+  .hero h1 { font-family: var(--font-display); font-size: 52px; font-weight: 700; color: var(--fg-0); letter-spacing: 0.02em; line-height: 1.15; }
+  .hero h1 span { color: var(--accent); }
+  .hero .slogan { color: var(--fg-2); font-size: 17px; margin-top: var(--sp-4); }
+  .hero .badges { margin-top: var(--sp-5); }
+  .badge {
+    display: inline-block; margin: 0 6px; padding: 4px 14px;
+    border: 1px solid var(--line-2); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-2);
+  }
+  .badge.b { color: var(--accent); border-color: var(--accent-line); }
+
+  .section-title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--fg-0);
+    margin: var(--sp-7) 0 var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--line-1);
+    position: relative;
+  }
+  .section-title::before {
+    content: ''; position: absolute; left: 0; bottom: -1px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .section-title .sub { display: block; font-size: 12px; font-weight: 400; color: var(--fg-3); font-family: var(--font-mono); letter-spacing: 0.06em; margin-bottom: 4px; }
+
+  /* 项目卡网格 */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--sp-5); margin: var(--sp-5) 0; }
+  .pcard {
+    background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 12px;
+    padding: var(--sp-5);
+    display: flex; flex-direction: column; gap: var(--sp-3);
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .pcard::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent 70%);
+    opacity: 0.5;
+  }
+  .pcard:hover { border-color: var(--accent-line); transform: translateY(-3px); box-shadow: 0 8px 32px rgba(94, 234, 212, 0.06); }
+  .pcard .p-no { font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: 0.12em; }
+  .pcard .p-title { font-family: var(--font-display); font-size: 20px; font-weight: 700; color: var(--fg-0); }
+  .pcard .p-title small { display: block; font-size: 12px; color: var(--accent); font-weight: 400; margin-top: 2px; font-family: var(--font-mono); letter-spacing: 0.06em; }
+  .pcard .p-desc { color: var(--fg-2); font-size: 13.5px; flex: 1; }
+  .pcard .p-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pcard .p-tags span { font-family: var(--font-mono); font-size: 11px; color: var(--fg-2); border: 1px solid var(--line-2); border-radius: 999px; padding: 1px 10px; }
+  .pcard .p-link {
+    display: inline-flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 12.5px; color: var(--accent);
+    border: 1px solid var(--accent-line); border-radius: 8px;
+    padding: 8px 14px; transition: background 0.2s;
+  }
+  .pcard .p-link:hover { background: var(--accent-dim); text-decoration: none; }
+
+  .foot { text-align: center; margin-top: var(--sp-8); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 34px; }
+    .page-wrap { padding: var(--sp-4); }
+    .section-title { font-size: 19px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 蓝图页眉 -->
+  <div class="drawing-header">
+    <div class="left"><span>Portfolio Index</span><span class="status-dot"></span><span>本地展示 · 统一索引</span></div>
+    <div class="right"><span>Showcase · Lujo</span></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>工程作品<br><span>统一索引</span></h1>
+    <p class="slogan">可展示的工程资产集中于此——能力档案与可视化工程，点击卡片进入对应项目。</p>
+    <div class="badges">
+      <span class="badge b">4 能力档案</span>
+      <span class="badge">2 可视化工程</span>
+      <span class="badge">本地展示</span>
+    </div>
+  </section>
+
+  <!-- 能力档案 -->
+  <section>
+    <h2 class="section-title"><span class="sub">01 · CAPABILITY PROFILES</span>工程能力档案</h2>
+    <div class="card-grid">
+      <div class="pcard">
+        <span class="p-no">P-01</span>
+        <div class="p-title">企业私有化知识平台<small>RAG PLATFORM ENGINEERING</small></div>
+        <p class="p-desc">企业级 RAG 知识平台的整体工程与落地——知识加工为大模型可检索问答的知识底座。</p>
+        <div class="p-tags"><span>RAG</span><span>知识工程</span><span>私有化</span></div>
+        <a class="p-link" href="./企业私有化知识平台-能力档案.html" target="_blank" rel="noopener">打开档案 <span>→</span></a>
+      </div>
+      <div class="pcard">
+        <span class="p-no">P-02</span>
+        <div class="p-title">智答客<small>PRIVATE AI CUSTOMER SERVICE</small></div>
+        <p class="p-desc">私有化 AI 客服系统——大模型对话 + 多知识库检索 + 对外客服 SDK 的全栈产品。</p>
+        <div class="p-tags"><span>全栈</span><span>RAG</span><span>SDK</span></div>
+        <a class="p-link" href="./智答客-能力档案.html" target="_blank" rel="noopener">打开档案 <span>→</span></a>
+      </div>
+      <div class="pcard">
+        <span class="p-no">P-03</span>
+        <div class="p-title">文档脱敏工具<small>PRIVACY PROTECTION TOOL</small></div>
+        <p class="p-desc">隐私保护工程实践——识别、确认、脱敏、审计的闭环流水线，LLM 辅助且可本地部署。</p>
+        <div class="p-tags"><span>隐私保护</span><span>LLM</span><span>AI 工程化</span></div>
+        <a class="p-link" href="./文档脱敏工具-能力档案.html" target="_blank" rel="noopener">打开档案 <span>→</span></a>
+      </div>
+      <div class="pcard">
+        <span class="p-no">P-04</span>
+        <div class="p-title">AI 运维工程<small>AI-DRIVEN DELIVERY OPS</small></div>
+        <p class="p-desc">智能体驱动的交付运维体系——多编排器团队、门控流水线、全链路留痕的信创化交付。</p>
+        <div class="p-tags"><span>AI Harness</span><span>运维</span><span>信创</span></div>
+        <a class="p-link" href="./AI运维工程-能力档案.html" target="_blank" rel="noopener">打开档案 <span>→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 可视化工程 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · VISUAL PROJECTS</span>可视化工程</h2>
+    <div class="card-grid">
+      <div class="pcard">
+        <span class="p-no">V-01</span>
+        <div class="p-title">Skill 工程可视化<small>SKILL-FLOW-VIZ</small></div>
+        <p class="p-desc">面向软件工程师的真实交付全生命周期——把方法论固化为可调度资产，执行流程、编排链路一图看懂。</p>
+        <div class="p-tags"><span>Skill 工程</span><span>工作流</span><span>可视化</span></div>
+        <a class="p-link" href="https://siyuanjun.github.io/skill-flow-viz/" target="_blank" rel="noopener">打开线上工程 <span>↗</span></a>
+      </div>
+      <div class="pcard">
+        <span class="p-no">V-02</span>
+        <div class="p-title">本体工程师数字员工<small>ONTOLOGY-BRAIN VISUAL</small></div>
+        <p class="p-desc">面向本体工程师与企业知识团队——把业务文档自动建成可检索、可评测的本体知识库，六环流水线可视化。</p>
+        <div class="p-tags"><span>Harness</span><span>数字员工</span><span>展示层</span></div>
+        <a class="p-link" href="https://siyuanjun.github.io/ontology-brain-visual/" target="_blank" rel="noopener">打开线上工程 <span>↗</span></a>
+      </div>
+      <div class="pcard">
+        <span class="p-no">V-03</span>
+        <div class="p-title">Harness Team System<small>HARNESS-TEAM-VISUAL</small></div>
+        <p class="p-desc">面向复杂项目研发团队——为任意项目搭建可调度的 AI 常驻团队：9 步流程、6 种模式、3 个垂直实例。</p>
+        <div class="p-tags"><span>多 Agent</span><span>三层体系</span><span>方法论</span></div>
+        <a class="p-link" href="./harness-team-visual/index.html" target="_blank" rel="noopener">打开工程 <span>→</span></a>
+      </div>
+      <div class="pcard">
+        <span class="p-no">V-04</span>
+        <div class="p-title">FDE 数字员工大脑<small>FDE-BRAIN-VISUAL</small></div>
+        <p class="p-desc">面向客户现场交付场景——数据适配、价值汇报、故障兜底、交接文档自动化：G1–G4 + 14 步思维管线。</p>
+        <div class="p-tags"><span>数字员工</span><span>大脑架构</span><span>50/30/20</span></div>
+        <a class="p-link" href="./fde-brain-visual/index.html" target="_blank" rel="noopener">打开工程 <span>→</span></a>
+      </div>
+      <div class="pcard">
+        <span class="p-no">V-05</span>
+        <div class="p-title">Ensemble 合奏体系<small>MULTI-ROLE DIGITAL EMPLOYEES</small></div>
+        <p class="p-desc">面向多角色长周期 AI 协作——一个人也是一支乐团：AI 管家统筹、多岗位数字员工协奏、人工全程在场。</p>
+        <div class="p-tags"><span>数字员工</span><span>多 Agent 平台</span><span>开放接入</span></div>
+        <a class="p-link" href="./ensemble-visual/index.html" target="_blank" rel="noopener">打开工程 <span>→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">PORTFOLIO INDEX · 本地展示 · 统一跳转</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ensemble · 合奏体系</title>
+<style>
+  :root{
+    --bg-0:#0a0e14; --bg-1:#0e141d; --bg-2:#131b26; --bg-3:#182230;
+    --line-1:#1c2838; --line-2:#243349;
+    --fg-0:#eaf2f8; --fg-1:#b8c4d0; --fg-2:#8b9bab; --fg-3:#5c6c7c;
+    --accent:#5eead4; --accent-line:rgba(94,234,212,.35);
+    --ok:#34d399; --new:#fbbf24; --warn:#f87171;
+    --font-display:'Space Grotesk','PingFang SC','Microsoft YaHei',sans-serif;
+    --font-mono:'JetBrains Mono','SF Mono',Menlo,Consolas,monospace;
+    --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px; --sp-7:48px; --sp-8:64px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg-0); color:var(--fg-1);
+    font-family:var(--font-display); font-size:15px; line-height:1.65;
+    background-image:linear-gradient(rgba(94,234,212,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(94,234,212,.035) 1px,transparent 1px);
+    background-size:42px 42px;
+  }
+  .page-wrap{max-width:1120px;margin:0 auto;padding:0 var(--sp-5) var(--sp-8)}
+  section{padding:var(--sp-7) 0;border-bottom:1px solid var(--line-1)}
+  section:last-of-type{border-bottom:none}
+  .section-title{font-family:var(--font-mono);font-size:12px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:var(--sp-4)}
+  .section-title .sub{display:block;color:var(--fg-3);letter-spacing:.1em;font-size:11px;margin-bottom:var(--sp-2)}
+  h2{color:var(--fg-0);font-size:26px;font-weight:600;margin-bottom:var(--sp-4)}
+  .card{background:var(--bg-1);border:1px solid var(--line-1);border-radius:12px;padding:var(--sp-5);margin-top:var(--sp-4)}
+  .lead{color:var(--fg-0);font-size:17px;line-height:1.8;border-left:3px solid var(--accent);padding-left:var(--sp-4);margin-top:var(--sp-4)}
+  .grid{display:grid;gap:var(--sp-4)}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .card h3{color:var(--fg-0);font-size:15px;margin:var(--sp-2) 0}
+  .card .cap{font-family:var(--font-mono);font-size:11px;color:var(--accent);letter-spacing:.1em}
+  .card p{color:var(--fg-2);font-size:13.5px;margin-top:var(--sp-2)}
+  .tag{display:inline-block;padding:2px 10px;border:1px solid var(--line-2);border-radius:999px;font-family:var(--font-mono);font-size:11px;color:var(--fg-2);margin:var(--sp-2) var(--sp-2) 0 0}
+  .tag.a{color:var(--accent);border-color:var(--accent-line)}
+  /* hero */
+  .hero{text-align:center;padding:var(--sp-8) 0 var(--sp-7)}
+  .hero .kicker{font-family:var(--font-mono);font-size:12px;letter-spacing:.3em;color:var(--fg-3);text-transform:uppercase}
+  .hero h1{font-family:var(--font-display);font-size:58px;font-weight:700;color:var(--fg-0);letter-spacing:.02em;margin-top:var(--sp-3)}
+  .hero h1 span{color:var(--accent)}
+  .hero .slogan{color:var(--fg-2);font-size:18px;margin-top:var(--sp-4)}
+  .hero .badges{margin-top:var(--sp-5)}
+  .hero .badge{display:inline-block;margin:0 6px;padding:4px 14px;border:1px solid var(--line-2);border-radius:999px;font-family:var(--font-mono);font-size:12px;color:var(--fg-2)}
+  .hero .badge.b{color:var(--accent);border-color:var(--accent-line)}
+  /* flow */
+  .flow{list-style:none;margin-top:var(--sp-4)}
+  .flow li{position:relative;padding:0 0 var(--sp-5) var(--sp-6);border-left:1px solid var(--line-2)}
+  .flow li::before{content:'';position:absolute;left:-5px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent)}
+  .flow .f-no{font-family:var(--font-mono);font-size:11px;color:var(--fg-3);letter-spacing:.08em}
+  .flow .f-title{color:var(--fg-0);font-weight:600}
+  .flow .f-desc{color:var(--fg-2);font-size:13px;margin-top:2px}
+  /* roles */
+  .role{background:var(--bg-1);border:1px solid var(--line-1);border-radius:12px;padding:var(--sp-5);text-align:center}
+  .role .r-icon{width:52px;height:52px;margin:0 auto;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;color:var(--accent);border:1px solid var(--accent-line);background:var(--bg-2)}
+  .role h4{color:var(--fg-0);margin-top:var(--sp-3);font-size:15px}
+  .role .r-desc{color:var(--fg-2);font-size:12.5px;margin-top:var(--sp-2)}
+  /* table */
+  table{width:100%;border-collapse:collapse;margin-top:var(--sp-4);font-size:13px}
+  th{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;color:var(--fg-3);text-align:left;padding:var(--sp-3);border-bottom:1px solid var(--line-2);text-transform:uppercase}
+  td{padding:var(--sp-3);border-bottom:1px solid var(--line-1);color:var(--fg-2);vertical-align:top}
+  td b{color:var(--fg-0);font-weight:600}
+  .kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp-4);margin-top:var(--sp-5)}
+  .kpi-card{background:var(--bg-1);border:1px solid var(--line-1);border-radius:12px;padding:var(--sp-5);text-align:center}
+  .kpi-num{font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--fg-0)}
+  .kpi-num small{font-size:16px;color:var(--accent)}
+  .kpi-label{font-family:var(--font-mono);font-size:11px;color:var(--fg-3);letter-spacing:.08em;margin-top:var(--sp-2)}
+  .cmd{background:var(--bg-3);border:1px solid var(--line-1);border-radius:6px;padding:6px 12px;font-family:var(--font-mono);font-size:12px;color:var(--fg-1);display:inline-block;margin:4px 0}
+  .btn{display:inline-block;margin-top:var(--sp-3);padding:8px 18px;border:1px solid var(--accent-line);border-radius:8px;color:var(--accent);font-size:13px;text-decoration:none;font-family:var(--font-mono)}
+  .btn:hover{background:var(--accent);color:var(--bg-0)}
+  @media(max-width:768px){
+    .hero h1{font-size:36px}
+    .g2,.g3{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 1. Hero -->
+  <section class="hero">
+    <div class="kicker">MULTI-ROLE DIGITAL EMPLOYEE SYSTEM</div>
+    <h1>Ensemble<span>合奏</span></h1>
+    <p class="slogan">一个人，也可以是一支乐团——AI 管家统筹，多岗位数字员工协奏，人类全程在场</p>
+    <div class="badges">
+      <span class="badge b">AI 管家</span>
+      <span class="badge">多岗位执行者</span>
+      <span class="badge">团队协作单元</span>
+      <span class="badge">全流程人工可见</span>
+    </div>
+  </section>
+
+  <!-- 2. 使用场景 -->
+  <section>
+    <h2 class="section-title"><span class="sub">01 · USE SCENARIO</span>使用场景</h2>
+    <div class="grid g4">
+      <div class="card">
+        <div class="cap">赋能谁</div>
+        <h3>数字员工建设者与研发团队</h3>
+        <p>需要把多个专职 AI 角色组织起来、像管团队一样管 AI 的个人与组织——以及希望让 AI 拥有"人"的身份、可见协作过程的企业。</p>
+      </div>
+      <div class="card">
+        <div class="cap">什么场景</div>
+        <h3>多角色长周期协作</h3>
+        <p>前端、后端、测试、研究等不同职责要同时干活；任务要持续拆解、跟踪、纠偏；协作过程要能被人类随时看见、随时接管。</p>
+      </div>
+      <div class="card">
+        <div class="cap">解决什么</div>
+        <h3>AI 协作缺少组织形态</h3>
+        <p>单 Agent 对话没有角色分工、共享任务空间和人工监督。Ensemble 给出组织形态：管家拆分任务、多岗位执行者并行、团队共享上下文、房间全程可见。</p>
+      </div>
+      <div class="card">
+        <div class="cap">带来什么</div>
+        <h3>可组织、可监督、可演进</h3>
+        <p>自然语言即可增删改 AI 岗位；任何时刻可介入纠偏；凭证与权限统一收敛；同一协作空间中多种执行框架并存、可原地切换。</p>
+      </div>
+    </div>
+    <div class="lead">一句话：把"一队 AI 员工"当成一个组织来运营——有管家、有岗位、有团队、有会议室，人类全程在场。</div>
+  </section>
+
+  <!-- 3. 大脑结构 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · BRAIN STRUCTURE</span>大脑结构 · 角色体系</h2>
+    <div class="grid g4">
+      <div class="role"><div class="r-icon">HUM</div><h4>Human 人类</h4><div class="r-desc">通过 IM 提出目标、查看全程协作、随时补充要求或接管</div></div>
+      <div class="role"><div class="r-icon">MGR</div><h4>Manager 管家</h4><div class="r-desc">理解目标、创建与选择岗位、拆解分配任务、跟踪进度并汇总</div></div>
+      <div class="role"><div class="r-icon">WRK</div><h4>Worker 执行者</h4><div class="r-desc">专职岗位，拥有独立角色、模型、运行时、技能与工具权限</div></div>
+      <div class="role"><div class="r-icon">TEAM</div><h4>Team 团队</h4><div class="r-desc">多名执行者 + 团队负责人组成可复用协作单元，共享上下文</div></div>
+    </div>
+    <div class="card" style="margin-top:var(--sp-5);">
+      <div class="cap">基础大脑 · 现状</div>
+      <p style="margin-top:var(--sp-2);">Ensemble 已具备<b>协调型基础大脑</b>：管家（Manager）承担任务编排与资源管理，内置十余项管理技能（通道管理、任务协同、团队管理、模型切换、服务发布、文件同步等），可对话式创建与调度各岗位执行者。</p>
+      <div class="cap" style="margin-top:var(--sp-4);">大脑融合 · 演进方向</div>
+      <p style="margin-top:var(--sp-2);">专门岗位工程师大脑（本体工程师、前沿部署工程师，以及更多职位）将以"岗位执行者 + 专属技能包"的形态融入 Ensemble，成为可被管家随时调度的专职数字员工。</p>
+    </div>
+  </section>
+
+  <!-- 4. 系统组件 -->
+  <section>
+    <h2 class="section-title"><span class="sub">03 · SYSTEM</span>系统组成 · 底座四件套</h2>
+    <table>
+      <tr><th>组件</th><th>职责</th></tr>
+      <tr><td><b>控制平面</b></td><td>协调四类声明式资源（执行者 / 管家 / 团队 / 人类），统一管理 AI 岗位的创建、更新与销毁，对外提供 REST API</td></tr>
+      <tr><td><b>AI 网关</b></td><td>统一代理模型与工具流量，统一托管凭证与访问权限——执行者不接触真实密钥</td></tr>
+      <tr><td><b>自建 IM 通道</b></td><td>承载人类、管家、执行者、团队之间的可见通信，所有协作过程都在同一时间线中</td></tr>
+      <tr><td><b>集中存储</b></td><td>保存各岗位工作区、共享任务上下文与任务产物；执行者无状态、可随时替换</td></tr>
+    </table>
+  </section>
+
+  <!-- 5. 协作逻辑 -->
+  <section>
+    <h2 class="section-title"><span class="sub">04 · COLLABORATION</span>一次协作如何发生</h2>
+    <ul class="flow">
+      <li><div class="f-no">STEP 01</div><div class="f-title">人类提出目标</div><div class="f-desc">在 IM 中向管家描述目标，全程自然语言</div></li>
+      <li><div class="f-no">STEP 02</div><div class="f-title">管家决策</div><div class="f-desc">判断使用已有执行者、创建新执行者，还是组织一个团队</div></li>
+      <li><div class="f-no">STEP 03</div><div class="f-title">平台就绪</div><div class="f-desc">控制平面自动准备身份、网关权限、共享存储与运行环境</div></li>
+      <li><div class="f-no">STEP 04</div><div class="f-title">派单与跟踪</div><div class="f-desc">管家将任务交给执行者或团队，在房间中跟踪进度</div></li>
+      <li><div class="f-no">STEP 05</div><div class="f-title">执行与沉淀</div><div class="f-desc">执行者通过模型、技能与获授权的工具干活，上下文与产物写入共享存储</div></li>
+      <li><div class="f-no">STEP 06</div><div class="f-title">人工介入</div><div class="f-desc">执行期间可随时补充要求、纠偏或审批</div></li>
+      <li><div class="f-no">STEP 07</div><div class="f-title">汇总汇报</div><div class="f-desc">管家汇总执行结果向人类报告——全程无黑盒</div></li>
+    </ul>
+  </section>
+
+  <!-- 6. 多岗位运行时 -->
+  <section>
+    <h2 class="section-title"><span class="sub">05 · MULTI-RUNTIME</span>多岗位执行体系</h2>
+    <table>
+      <tr><th>执行形态</th><th>定位</th><th>典型能力</th></tr>
+      <tr><td><b>通用型</b></td><td>全能岗位，面向任务编排与工具调用</td><td>丰富的技能生态、成熟的任务编排</td></tr>
+      <tr><td><b>轻量型</b></td><td>敏捷岗位，面向快速任务</td><td>浏览器自动化、轻量快速执行</td></tr>
+      <tr><td><b>自主编程型</b></td><td>研发岗位，面向编程工程</td><td>终端沙箱、自我进化的技能、持久化记忆</td></tr>
+      <tr><td><b>无头编程型</b></td><td>后台研发岗位，面向长任务</td><td>按房间续聊、文件往返、重启恢复</td></tr>
+    </table>
+    <div class="card">
+      <div class="cap">同一房间 · 多种执行形态共存协作</div>
+      <p style="margin-top:var(--sp-2);">不同执行框架的岗位可以在同一协作空间中共存、互相配合；岗位的执行形态可原地切换，无需重建身份与数据。</p>
+      <code class="cmd">agt update worker --runtime &lt;执行形态&gt;</code>
+    </div>
+  </section>
+
+  <!-- 7. 开放接入工程 -->
+  <section>
+    <h2 class="section-title"><span class="sub">06 · OPEN INTERFACE</span>开放接入工程 · 让大脑长进来</h2>
+    <div class="grid g4">
+      <div class="card"><div class="cap">REST API</div><h3>控制面接口</h3><p>岗位、团队、人类、管家资源的全生命周期操作</p></div>
+      <div class="card"><div class="cap">CLI</div><h3>命令面接口</h3><p>容器内与文档示例的主要操作入口，创建、查看、切换一屏完成</p></div>
+      <div class="card"><div class="cap">声明式资源</div><h3>配置面接口</h3><p>四类资源以 YAML 描述，git 化管理、可审计、可回滚</p></div>
+      <div class="card"><div class="cap">技能与网关</div><h3>能力面接口</h3><p>技能包即插即用，工具经统一网关按身份授权</p></div>
+    </div>
+    <div class="lead">接入面是 Ensemble 长出"岗位大脑"的通道——专门能力（工程师大脑、业务大脑）以岗位 + 技能包形态接入，即被管家纳管、可调度、可监督。</div>
+  </section>
+
+  <!-- 8. 安全与监督 -->
+  <section>
+    <h2 class="section-title"><span class="sub">07 · SAFETY</span>安全模型 · 人工全程在场</h2>
+    <div class="grid g2">
+      <div class="card">
+        <div class="cap">凭证分层</div>
+        <h3>执行者不持有真实密钥</h3>
+        <p>岗位只持有身份令牌，真实模型与工具凭证统一收敛在网关层；管家知道岗位在做什么，但同样接触不到真实密钥。集中存储 + 无状态执行者，环境可随时重建替换。</p>
+      </div>
+      <div class="card">
+        <div class="cap">人工监督</div>
+        <h3>每个房间都有你</h3>
+        <p>人类、管家与相关岗位始终在同一协作房间中：可随时跳入补充要求、修改规则、纠偏方向。没有黑盒，没有隐藏的 Agent 间调用；管家心跳监测岗位状态，异常自动提醒。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. 演进路线 -->
+  <section>
+    <h2 class="section-title"><span class="sub">08 · EVOLUTION</span>演进路线</h2>
+    <ul class="flow">
+      <li><div class="f-no">PHASE 1</div><div class="f-title">平台底座</div><div class="f-desc">多容器平台就绪：控制平面、AI 网关、自建 IM、集中存储四件套，四类声明式资源可编排</div></li>
+      <li><div class="f-no">PHASE 2</div><div class="f-title">基础大脑</div><div class="f-desc">管家大脑具备协调能力：十余项管理技能、多形态执行岗位、同房间共存协作与原地切换</div></li>
+      <li><div class="f-no">PHASE 3</div><div class="f-title">岗位大脑融合层</div><div class="f-desc">专门岗位工程师大脑以"执行者 + 技能包"形态融入 Ensemble——本体工程师、前沿部署工程师，以及更多职位</div></li>
+      <li><div class="f-no">PHASE 4</div><div class="f-title">多岗位数字员工生态</div><div class="f-desc">一套体系承载多名专职数字员工：管家统筹、岗位并行、团队协作、人类监督，面向真实业务持续交付</div></li>
+    </ul>
+  </section>
+
+  <!-- 10. 部署与用例 -->
+  <section>
+    <h2 class="section-title"><span class="sub">09 · DEPLOY & CASES</span>部署方式与典型用例</h2>
+    <div class="grid g2">
+      <div class="card">
+        <div class="cap">两种部署方式</div>
+        <h3>本地单机 → Kubernetes</h3>
+        <p>个人体验、开发测试用本地单机（一条命令拉起整套底座）；团队共享、长期运行、生产化用 Kubernetes 原生部署，可接入既有网关、存储与凭证体系。</p>
+      </div>
+      <div class="card">
+        <div class="cap">典型用例</div>
+        <h3>从交付到研究全覆盖</h3>
+        <p>软件功能交付 · 研究与分析报告 · 内容生产与多语言本地化 · 故障分析与修复建议 · 长期项目协作 · 自定义技能接入——每类用例都有推荐角色、流程与验收清单。</p>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:var(--sp-7);font-family:var(--font-mono);font-size:11px;color:var(--fg-3);">Ensemble · 多岗位数字员工协奏体系 · 量级口径</p>
+  </section>
+</div>
+</body>
+</html>

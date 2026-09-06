@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智答客 · 工程能力档案</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg-0);
+    color: var(--fg-1);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :root {
+    --bg-0: #0a0e14; --bg-1: #0f151d; --bg-2: #141c26; --bg-3: #1a2432;
+    --fg-0: #e6edf3; --fg-1: #c9d4df; --fg-2: #8b98a9; --fg-3: #5a6879;
+    --accent: #5eead4; --accent-dim: #2dd4bf33; --accent-line: #2dd4bf55;
+    --ok: #34d399; --warn: #fbbf24; --new: #a78bfa; --risk: #f87171;
+    --line-0: #1e293b; --line-1: #273449; --line-2: #334155;
+    --grid-color: #1e293b55;
+    --font-display: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  }
+  .page-wrap { max-width: 1080px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(--sp-8); }
+
+  .drawing-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--line-1);
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    position: sticky; top: 0;
+    background: rgba(10, 14, 20, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    margin-bottom: var(--sp-7);
+  }
+  .drawing-header .left, .drawing-header .right { display: flex; gap: var(--sp-5); align-items: center; }
+  .drawing-header .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok); display: inline-block;
+    box-shadow: 0 0 8px var(--ok);
+  }
+
+  .hero { text-align: center; padding: var(--sp-8) 0 var(--sp-6); }
+  .hero h1 { font-family: var(--font-display); font-size: 52px; font-weight: 700; color: var(--fg-0); letter-spacing: 0.02em; line-height: 1.15; }
+  .hero h1 span { color: var(--accent); }
+  .hero .slogan { color: var(--fg-2); font-size: 17px; margin-top: var(--sp-4); max-width: 52ch; margin-left: auto; margin-right: auto; }
+  .hero .badges { margin-top: var(--sp-5); }
+  .badge {
+    display: inline-block; margin: 0 6px; padding: 4px 14px;
+    border: 1px solid var(--line-2); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-2);
+  }
+  .badge.b { color: var(--accent); border-color: var(--accent-line); }
+
+  .section-title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--fg-0);
+    margin: var(--sp-7) 0 var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--line-1);
+    position: relative;
+  }
+  .section-title::before {
+    content: ''; position: absolute; left: 0; bottom: -1px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .section-title .sub { display: block; font-size: 12px; font-weight: 400; color: var(--fg-3); font-family: var(--font-mono); letter-spacing: 0.06em; margin-bottom: 4px; }
+
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .kpi-card { background: var(--bg-1); border: 1px solid var(--line-1); border-left: 3px solid var(--accent); border-radius: 8px; padding: var(--sp-4) var(--sp-5); }
+  .kpi-card .kpi-num { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--fg-0); }
+  .kpi-card .kpi-num small { font-size: 14px; color: var(--fg-3); font-weight: 400; }
+  .kpi-card .kpi-label { font-size: 12px; color: var(--fg-2); margin-top: 4px; letter-spacing: 0.04em; }
+  .kpi-card.delta { border-left-color: var(--ok); }
+
+  .card { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-5); transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .card h3 { color: var(--fg-0); font-family: var(--font-display); margin-bottom: var(--sp-3); }
+  .card p { color: var(--fg-2); font-size: 14px; }
+  .lead { border-left: 3px solid var(--accent); padding: var(--sp-3) var(--sp-4); background: var(--accent-dim); color: var(--fg-0); font-size: 15px; margin: var(--sp-4) 0; border-radius: 0 6px 6px 0; }
+
+  .flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .flow-step { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-4) var(--sp-5); }
+  .flow-step .step-no { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: var(--sp-2); display: block; }
+  .flow-step h4 { color: var(--fg-0); font-family: var(--font-display); font-size: 15px; margin-bottom: var(--sp-2); }
+  .flow-step p { color: var(--fg-2); font-size: 13px; }
+
+  .timeline { list-style: none; margin-top: var(--sp-4); }
+  .timeline li { position: relative; padding: 0 0 var(--sp-5) var(--sp-6); border-left: 1px solid var(--line-2); }
+  .timeline li::before { content: ''; position: absolute; left: -5px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .timeline li.done::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .timeline li.next::before { background: var(--new); box-shadow: 0 0 8px var(--new); }
+  .timeline .t-phase { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); }
+  .timeline .t-title { color: var(--fg-0); font-weight: 600; }
+  .timeline .t-desc { color: var(--fg-2); font-size: 13px; margin-top: 2px; }
+
+  .list { list-style: none; margin: var(--sp-4) 0; }
+  .list li { position: relative; padding: 0 0 var(--sp-4) var(--sp-5); border-left: 1px solid var(--line-2); color: var(--fg-1); }
+  .list li::before { content: ''; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .list li b { color: var(--fg-0); }
+  .list li .ds { color: var(--fg-2); font-size: 13.5px; margin-top: 2px; display: block; }
+
+  .tag { display: inline-block; padding: 2px 12px; border: 1px solid var(--accent-line); border-radius: 999px; font-size: 12px; font-family: var(--font-mono); color: var(--accent); background: var(--accent-dim); margin: 2px 4px 2px 0; }
+  .tag.plain { border-color: var(--line-2); color: var(--fg-2); background: transparent; }
+
+  .foot { text-align: center; margin-top: var(--sp-8); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 34px; }
+    .page-wrap { padding: var(--sp-4); }
+    .section-title { font-size: 19px; }
+    .flow-steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 蓝图页眉 -->
+  <div class="drawing-header">
+    <div class="left"><span>Capability Portfolio</span><span class="status-dot"></span><span>本地留存 · 量级口径</span></div>
+    <div class="right"><span>No. 02 · AI 客服平台</span></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>智答客<br><span>私有化 AI 客服系统</span></h1>
+    <p class="slogan">基于大语言模型与知识库的企业级私有化智能客服系统，通过检索增强生成（RAG）提升问答质量与效率——把企业知识变成可靠的自动应答能力。</p>
+    <div class="badges">
+      <span class="badge b">从 0 到 1 · 全栈</span>
+      <span class="badge">RAG 知识检索</span>
+      <span class="badge">流式应答</span>
+      <span class="badge">对外 SDK</span>
+    </div>
+  </section>
+
+  <!-- 关键指标 -->
+  <section>
+    <h2 class="section-title"><span class="sub">01 · KEY METRICS</span>关键指标</h2>
+    <div class="kpi-strip">
+      <div class="kpi-card"><div class="kpi-num">约 300<small> 源文件</small></div><div class="kpi-label">全栈工程规模</div></div>
+      <div class="kpi-card"><div class="kpi-num">4 万余行<small> 代码</small></div><div class="kpi-label">独立开发量级</div></div>
+      <div class="kpi-card"><div class="kpi-num">200 余次<small> 提交</small></div><div class="kpi-label">持续迭代</div></div>
+      <div class="kpi-card delta"><div class="kpi-num">30 余个<small> 测试文件</small></div><div class="kpi-label">质量保障</div></div>
+    </div>
+  </section>
+
+  <!-- 项目定位 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · POSITION</span>项目定位</h2>
+    <div class="card">
+      <p>面向企业的<b style="color:var(--fg-0)">私有化智能客服平台</b>：大模型对话 + 多来源知识库检索，支持文档知识入库、精准问答、流式响应与多轮会话，并提供可嵌入对外业务的客服 SDK，形成「知识 → 检索 → 应答 → 集成」的完整闭环。</p>
+      <div class="lead">从零独立设计、开发与交付——覆盖后端服务、前端应用、知识库与向量检索、对外 SDK 的完整产品。</div>
+    </div>
+  </section>
+
+  <!-- 工程方法论 -->
+  <section>
+    <h2 class="section-title"><span class="sub">03 · METHODOLOGY</span>工程方法论</h2>
+    <p style="color:var(--fg-2); margin-bottom:var(--sp-3);">贯穿项目全过程的思考方式——可迁移、可复用，与具体业务解耦。</p>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="step-no">M-01</span><h4>RAG 全链路工程化</h4><p>对「文档解析 → 切片 → 向量化 → 检索 → 问题改写 → 生成」完整链路做工程化设计：每一环都可观测、可调优。</p></div>
+      <div class="flow-step"><span class="step-no">M-02</span><h4>多来源知识统一抽象</h4><p>将不同来源的知识库抽象为统一检索接口，业务侧无感切换；本地向量库与云端知识服务并存，兼顾数据自主与扩展。</p></div>
+      <div class="flow-step"><span class="step-no">M-03</span><h4>产品化与 SDK 思维</h4><p>不止做「能聊天的系统」，还产出对外可嵌入的客服 SDK 与生成器页面——把能力封装为可集成、可配置的产品形态。</p></div>
+      <div class="flow-step"><span class="step-no">M-04</span><h4>可靠性设计</h4><p>流式响应全链路、重试机制、并发控制、会话安全与健康探活——让系统在真实负载下可用、可监控、可恢复。</p></div>
+      <div class="flow-step"><span class="step-no">M-05</span><h4>测试与文档双驱动</h4><p>多套自动化测试保障行为稳定；文档与代码同步演进，让系统可接手、可维护、可交付。</p></div>
+      <div class="flow-step"><span class="step-no">M-06</span><h4>容器化交付</h4><p>基于容器编排的整体交付，配套健康检查与配置化运行，简化部署与迁移成本。</p></div>
+    </div>
+  </section>
+
+  <!-- 演进时间轴 -->
+  <section>
+    <h2 class="section-title"><span class="sub">04 · ROADMAP</span>项目演进</h2>
+    <ul class="timeline">
+      <li class="done">
+        <div class="t-phase">PHASE 1 · 已交付</div>
+        <div class="t-title">全栈骨架与对话链路</div>
+        <div class="t-desc">后端服务 + 前端应用 + 对话核心链路打通，流式应答与多轮会话可用</div>
+      </li>
+      <li class="done">
+        <div class="t-phase">PHASE 2 · 已交付</div>
+        <div class="t-title">知识库与 RAG 落地</div>
+        <div class="t-desc">多来源知识接入、文档处理与向量检索，问题改写提升命中质量</div>
+      </li>
+      <li class="done">
+        <div class="t-phase">PHASE 3 · 已交付</div>
+        <div class="t-title">产品化与 SDK</div>
+        <div class="t-desc">对外客服 SDK 与生成器页面，能力封装为可嵌入、可配置的产品形态</div>
+      </li>
+      <li class="done">
+        <div class="t-phase">PHASE 4 · 持续</div>
+        <div class="t-title">体验打磨与工程加固</div>
+        <div class="t-desc">高频迭代集中在对话、入口与核心组件——围绕用户体验持续演进</div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- 能力素养 -->
+  <section>
+    <h2 class="section-title"><span class="sub">05 · CAPABILITY</span>能力与技术素养</h2>
+    <div style="margin: var(--sp-4) 0;">
+      <span class="tag">后端服务</span><span class="tag">前端应用</span><span class="tag">RAG / 向量检索</span><span class="tag">大模型接入</span><span class="tag">对外 SDK</span><span class="tag">容器化</span>
+      <span class="tag plain">认证与安全</span><span class="tag plain">流式处理</span><span class="tag plain">缓存与队列</span><span class="tag plain">数据库设计</span>
+    </div>
+    <ul class="list">
+      <li><b>全栈独立交付</b><span class="ds">后端接口、前端界面、知识库链路、SDK 全部独立完成，单人多线推进（前后端投入相当）。</span></li>
+      <li><b>对话体验打磨</b><span class="ds">流式输出、多轮上下文、问题改写提升检索命中——把「答得出」做成「答得准、答得快」。</span></li>
+      <li><b>工程素养沉淀</b><span class="ds">十余类工程方法论贯穿开发，其中半数以上有代码与文档双重印证（测试先行、接口契约、分层架构、可观测性等）。</span></li>
+    </ul>
+  </section>
+
+  <!-- 档案说明 -->
+  <section>
+    <h2 class="section-title"><span class="sub">06 · NOTE</span>档案说明</h2>
+    <div class="card">
+      <p>本档案为能力与思维方法的表达；所有规模与频次均为量级口径，不涉及精确数据；代码本体保持私有。</p>
+    </div>
+  </section>
+
+  <p class="foot">CAPABILITY PORTFOLIO · 本地留存 · 量级口径表达</p>
+</div>
+</body>
+</html>

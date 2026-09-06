@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harness Team System · 可视化首页</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg-0);
+    color: var(--fg-1);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :root {
+    --bg-0: #0a0e14; --bg-1: #0f151d; --bg-2: #141c26; --bg-3: #1a2432;
+    --fg-0: #e6edf3; --fg-1: #c9d4df; --fg-2: #8b98a9; --fg-3: #5a6879;
+    --accent: #5eead4; --accent-dim: #2dd4bf33; --accent-line: #2dd4bf55;
+    --ok: #34d399; --warn: #fbbf24; --new: #a78bfa; --risk: #f87171;
+    --line-0: #1e293b; --line-1: #273449; --line-2: #334155;
+    --grid-color: #1e293b55;
+    --font-display: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  }
+  .page-wrap { max-width: 1200px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(--sp-8); }
+
+  /* 蓝图页眉 */
+  .drawing-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--line-1);
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    position: sticky; top: 0;
+    background: rgba(10, 14, 20, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    margin-bottom: var(--sp-7);
+  }
+  .drawing-header .left, .drawing-header .right { display: flex; gap: var(--sp-5); align-items: center; }
+  .drawing-header .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok); display: inline-block;
+    box-shadow: 0 0 8px var(--ok);
+  }
+
+  /* Hero */
+  .hero { text-align: center; padding: var(--sp-8) 0 var(--sp-6); }
+  .hero h1 { font-family: var(--font-display); font-size: 56px; font-weight: 700; color: var(--fg-0); letter-spacing: 0.02em; line-height: 1.12; }
+  .hero h1 span { color: var(--accent); }
+  .hero .slogan { color: var(--fg-2); font-size: 18px; margin-top: var(--sp-4); max-width: 60ch; margin-left: auto; margin-right: auto; }
+  .hero .badges { margin-top: var(--sp-5); }
+  .badge {
+    display: inline-block; margin: 0 6px; padding: 4px 14px;
+    border: 1px solid var(--line-2); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-2);
+  }
+  .badge.b { color: var(--accent); border-color: var(--accent-line); }
+
+  /* 区块标题 */
+  .section-title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--fg-0);
+    margin: var(--sp-7) 0 var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--line-1);
+    position: relative;
+  }
+  .section-title::before {
+    content: ''; position: absolute; left: 0; bottom: -1px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .section-title .sub { display: block; font-size: 12px; font-weight: 400; color: var(--fg-3); font-family: var(--font-mono); letter-spacing: 0.06em; margin-bottom: 4px; }
+
+  /* KPI */
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .kpi-card { background: var(--bg-1); border: 1px solid var(--line-1); border-left: 3px solid var(--accent); border-radius: 8px; padding: var(--sp-4) var(--sp-5); }
+  .kpi-card .kpi-num { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--fg-0); }
+  .kpi-card .kpi-num small { font-size: 14px; color: var(--fg-3); font-weight: 400; }
+  .kpi-card .kpi-label { font-size: 12px; color: var(--fg-2); margin-top: 4px; letter-spacing: 0.04em; }
+  .kpi-card.delta { border-left-color: var(--ok); }
+  .kpi-card.warn { border-left-color: var(--warn); }
+
+  /* 卡片 */
+  .card { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-5); transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .card h3 { color: var(--fg-0); font-family: var(--font-display); margin-bottom: var(--sp-3); }
+  .card p { color: var(--fg-2); font-size: 14px; }
+
+  /* 三层体系 */
+  .layer-stack { display: grid; gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .layer {
+    display: grid; grid-template-columns: 150px 1fr; gap: var(--sp-5);
+    background: var(--bg-1); border: 1px solid var(--line-1); border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: var(--sp-4) var(--sp-5);
+  }
+  .layer .layer-name { font-family: var(--font-mono); font-size: 13px; color: var(--accent); letter-spacing: 0.06em; padding-top: 4px; }
+  .layer .layer-detail { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+  .layer .layer-item { background: var(--bg-2); border: 1px solid var(--line-1); border-radius: 8px; padding: var(--sp-3) var(--sp-4); flex: 1 1 220px; }
+  .layer .layer-item h4 { color: var(--fg-0); font-family: var(--font-display); font-size: 14px; margin-bottom: 4px; }
+  .layer .layer-item p { color: var(--fg-2); font-size: 12.5px; }
+
+  /* 方法流程 */
+  .flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .flow-step { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-4) var(--sp-5); }
+  .flow-step .step-no { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: var(--sp-2); display: block; }
+  .flow-step h4 { color: var(--fg-0); font-family: var(--font-display); font-size: 15px; margin-bottom: var(--sp-2); }
+  .flow-step p { color: var(--fg-2); font-size: 13px; }
+
+  /* 表格 */
+  .data-table { width: 100%; border-collapse: collapse; margin: var(--sp-4) 0; font-size: 14px; }
+  .data-table th { background: var(--bg-3); color: var(--accent); font-family: var(--font-mono); font-size: 12px; text-align: left; padding: 10px 14px; border: 1px solid var(--line-1); letter-spacing: 0.04em; }
+  .data-table td { padding: 10px 14px; border: 1px solid var(--line-1); color: var(--fg-1); }
+  .data-table tr:nth-child(even) td { background: var(--bg-1); }
+
+  /* 团队卡 */
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .team-card { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-5); position: relative; overflow: hidden; }
+  .team-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), transparent 70%); opacity: 0.5; }
+  .team-card .t-no { font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); letter-spacing: 0.12em; }
+  .team-card h3 { color: var(--fg-0); font-family: var(--font-display); font-size: 17px; margin: var(--sp-2) 0 var(--sp-2); }
+  .team-card p { color: var(--fg-2); font-size: 13px; }
+  .team-card .t-tags { margin-top: var(--sp-3); display: flex; flex-wrap: wrap; gap: 6px; }
+  .team-card .t-tags span { font-family: var(--font-mono); font-size: 11px; color: var(--fg-2); border: 1px solid var(--line-2); border-radius: 999px; padding: 1px 10px; }
+
+  .foot { text-align: center; margin-top: var(--sp-8); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 34px; }
+    .page-wrap { padding: var(--sp-4); }
+    .layer { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 蓝图页眉 -->
+  <div class="drawing-header">
+    <div class="left"><span>Harness Team System</span><span class="status-dot"></span><span>AI 多 Agent 团队体系</span></div>
+    <div class="right"><span>Visualization · V-03</span></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Harness Team System<br><span>AI 多 Agent 团队体系</span></h1>
+    <p class="slogan">为任意项目构建可被调度的 AI 多 Agent 团队——从方法论到搭建工具，再到垂直团队实例，三层完整体系。</p>
+    <div class="badges">
+      <span class="badge b">三层体系</span>
+      <span class="badge">9 步组建流程</span>
+      <span class="badge">6 种协作模式</span>
+      <span class="badge">3 个垂直团队</span>
+    </div>
+  </section>
+
+  <!-- 使用场景 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · USE SCENARIO</span>使用场景</h2>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="step-no">SC-01</span><h4>赋能谁</h4><p>需要把 AI 从「单次对话」升级为「常驻团队成员」的开发者与研发团队——项目越复杂、越需要项目级上下文，价值越大。</p></div>
+      <div class="flow-step"><span class="step-no">SC-02</span><h4>什么场景</h4><p>项目复杂、需求多变，每次开新会话都要重新解释项目；AI 没有项目上下文，产出不连贯、边界靠猜。</p></div>
+      <div class="flow-step"><span class="step-no">SC-03</span><h4>解决什么</h4><p>用 9 步方法论 + 搭建/派单工具 + 垂直团队实例，为任意项目搭建可被真正调度的多 Agent 团队：角色、路由、技能、知识库一次配齐。</p></div>
+      <div class="flow-step"><span class="step-no">SC-04</span><h4>带来什么</h4><p>一句话需求经多层过滤产出准确结果；成员帮你想没想过的边界；团队随项目沉淀知识、持续演进。</p></div>
+    </div>
+  </section>
+
+  <!-- 关键指标 -->
+  <section>
+    <h2 class="section-title"><span class="sub">01 · KEY METRICS</span>关键指标</h2>
+    <div class="kpi-strip">
+      <div class="kpi-card"><div class="kpi-num">约百<small> 文件</small></div><div class="kpi-label">工程规模</div></div>
+      <div class="kpi-card"><div class="kpi-num">万余行<small> 工程资产</small></div><div class="kpi-label">方法论 + 工具 + 实例</div></div>
+      <div class="kpi-card"><div class="kpi-num">9<small> 步</small></div><div class="kpi-label">团队组建流程</div></div>
+      <div class="kpi-card"><div class="kpi-num">6<small> 种</small></div><div class="kpi-label">协作模式</div></div>
+      <div class="kpi-card delta"><div class="kpi-num">3<small> 个</small></div><div class="kpi-label">垂直团队实例</div></div>
+    </div>
+  </section>
+
+  <!-- 核心命题 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · THESIS</span>核心命题</h2>
+    <div class="card">
+      <p><b style="color:var(--fg-0)">项目需要常驻的、深入项目的 AI 团队成员</b>，而不是每次重新解释项目的单次对话。有了团队后，成员能帮你思考没考虑到的边界和编排——一句话需求通过多层过滤，最终产出准确、有价值的结果。</p>
+      <div class="hero" style="padding: var(--sp-5) 0 0;">
+        <p style="font-family: var(--font-mono); font-size: 13px; color: var(--accent);">一句话需求 → 多层过滤 → 准确交付</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 三层体系 -->
+  <section>
+    <h2 class="section-title"><span class="sub">03 · ARCHITECTURE</span>三层体系</h2>
+    <div class="layer-stack">
+      <div class="layer">
+        <div class="layer-name">理论层<br>METHODOLOGY</div>
+        <div class="layer-detail">
+          <div class="layer-item"><h4>团队搭建方法论</h4><p>9 步组建流程——从目标梳理到落地可调度，通用模板可迁移到任意项目与任意 AI 环境。</p></div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-name">工具层<br>TOOLKIT</div>
+        <div class="layer-detail">
+          <div class="layer-item"><h4>harness-team-builder</h4><p>搭团队：按 6 种协作模式选型，生成可调度、非空壳的团队配置。</p></div>
+          <div class="layer-item"><h4>harness-team-mission-planner</h4><p>派任务：把需求规划为可执行的团队任务，含模板与脚本支撑。</p></div>
+        </div>
+      </div>
+      <div class="layer">
+        <div class="layer-name">实例层<br>TEAMS</div>
+        <div class="layer-detail">
+          <div class="layer-item"><h4>ontology-brain-team</h4><p>本体工程师团队——面向知识体系与领域建模的垂直团队。</p></div>
+          <div class="layer-item"><h4>内容生产团队</h4><p>内容生产团队——面向内容创作与生产链路的垂直团队。</p></div>
+          <div class="layer-item"><h4>prd-review-team</h4><p>PRD 评审团队——面向需求评审与质量把关的垂直团队。</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 步流程 -->
+  <section>
+    <h2 class="section-title"><span class="sub">04 · METHOD</span>团队组建 · 9 步流程</h2>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="step-no">S-01</span><h4>梳理指令</h4><p>目标七问：目的 / 完成态 / 证据 / 反作弊 / 地界 / 取舍 / 未知——先想清楚再做。</p></div>
+      <div class="flow-step"><span class="step-no">S-02</span><h4>探查项目</h4><p>亲手跑一遍：读文档、看代码、查 git 状态、验证依赖可行性，不照抄文档。</p></div>
+      <div class="flow-step"><span class="step-no">S-03</span><h4>分析现状</h4><p>目标是什么、已完成什么、还缺什么——按严重度排序，区分逻辑缺口与交付缺口。</p></div>
+      <div class="flow-step"><span class="step-no">S-04</span><h4>设计班子</h4><p>6 种模式选型（可混合）：流水线 / 扇出扇入 / 专家池 / 生产者-审校者 / 监督者 / 层级委派。</p></div>
+      <div class="flow-step"><span class="step-no">S-05</span><h4>落盘配置</h4><p>把角色、职责、路由触发词落成团队配置文件，能被指令真正调度。</p></div>
+      <div class="flow-step"><span class="step-no">S-06</span><h4>路由表</h4><p>定义触发词 → 角色的路由规则，让请求自动分流到正确的团队成员。</p></div>
+      <div class="flow-step"><span class="step-no">S-07</span><h4>装大脑</h4><p>为团队配置技能与知识入口，成员具备完成任务的领域能力。</p></div>
+      <div class="flow-step"><span class="step-no">S-08</span><h4>知识蒸馏</h4><p>把项目经验蒸馏为可复用知识，沉淀为团队资产。</p></div>
+      <div class="flow-step"><span class="step-no">S-09</span><h4>知识库整合</h4><p>整合知识库与版本管理，团队随项目持续演进，git 提交收尾。</p></div>
+    </div>
+  </section>
+
+  <!-- 协作模式 -->
+  <section>
+    <h2 class="section-title"><span class="sub">05 · PATTERNS</span>6 种协作模式</h2>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="step-no">P-01</span><h4>流水线</h4><p>阶段串行、门控推进——适合确定性交付链路。</p></div>
+      <div class="flow-step"><span class="step-no">P-02</span><h4>扇出扇入</h4><p>任务并行分发、结果汇合——适合可拆分的独立子任务。</p></div>
+      <div class="flow-step"><span class="step-no">P-03</span><h4>专家池</h4><p>按领域调用专家成员——适合跨领域综合任务。</p></div>
+      <div class="flow-step"><span class="step-no">P-04</span><h4>生产者-审校者</h4><p>生产与审校分离——适合内容与代码质量把关。</p></div>
+      <div class="flow-step"><span class="step-no">P-05</span><h4>监督者</h4><p>主成员监督分派、整合交付——适合复杂多线任务。</p></div>
+      <div class="flow-step"><span class="step-no">P-06</span><h4>层级委派</h4><p>多层代理逐级拆解——适合大而复杂的组织型任务。</p></div>
+    </div>
+  </section>
+
+  <!-- 核心角色 -->
+  <section>
+    <h2 class="section-title"><span class="sub">06 · ROLES</span>核心角色</h2>
+    <table class="data-table">
+      <thead><tr><th>角色</th><th>职责</th><th>路由触发词示例</th></tr></thead>
+      <tbody>
+        <tr><td><b style="color:var(--fg-0)">{team}-lead</b> 编排者</td><td>按路由表分派、监控、整合交付</td><td style="font-family:var(--font-mono); font-size:12px;">分析 / 规划 / 推进 / 总览</td></tr>
+        <tr><td><b style="color:var(--fg-0)">engineer</b> 工程手</td><td>环境 / git / 代码修复</td><td style="font-family:var(--font-mono); font-size:12px;">收尾 / commit / 环境 / 依赖 / 推送</td></tr>
+        <tr><td><b style="color:var(--fg-0)">acceptor</b> 验收官</td><td>独立跑验收，逐条 PASS/FAIL</td><td style="font-family:var(--font-mono); font-size:12px;">验收 / 测试 / 终验 / pass</td></tr>
+        <tr><td><b style="color:var(--fg-0)">content-creator</b> 内容生产者</td><td>博客 / 文档 / 内容产出</td><td style="font-family:var(--font-mono); font-size:12px;">写文章 / 输出 / 内容</td></tr>
+        <tr><td><b style="color:var(--fg-0)">content-reviewer</b> 审校官</td><td>质量 / 合规 / 一致性</td><td style="font-family:var(--font-mono); font-size:12px;">审稿 / 检查 / 合规</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 实例团队 -->
+  <section>
+    <h2 class="section-title"><span class="sub">07 · TEAMS</span>垂直团队实例</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <span class="t-no">TEAM-01</span>
+        <h3>Ontology-Brain Team</h3>
+        <p>本体工程师团队——面向知识体系、领域建模与本体工程的垂直团队，含可视化与知识库沉淀。</p>
+        <div class="t-tags"><span>知识体系</span><span>领域建模</span><span>可视化</span></div>
+      </div>
+      <div class="team-card">
+        <span class="t-no">TEAM-02</span>
+        <h3>内容生产团队</h3>
+        <p>内容生产团队——面向内容创作与生产链路的垂直团队，含模板、示例与知识库。</p>
+        <div class="t-tags"><span>内容生产</span><span>模板</span><span>示例</span></div>
+      </div>
+      <div class="team-card">
+        <span class="t-no">TEAM-03</span>
+        <h3>PRD Review Team</h3>
+        <p>PRD 评审团队——面向需求文档评审与质量把关的垂直团队，含安装与技能体系。</p>
+        <div class="t-tags"><span>需求评审</span><span>质量把关</span><span>安装体系</span></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot">HARNESS TEAM SYSTEM · VISUALIZATION · LAYERED SYSTEM</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>企业私有化知识平台 · 工程能力档案</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--bg-0);
+    color: var(--fg-1);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 42px 42px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  :root {
+    --bg-0: #0a0e14; --bg-1: #0f151d; --bg-2: #141c26; --bg-3: #1a2432;
+    --fg-0: #e6edf3; --fg-1: #c9d4df; --fg-2: #8b98a9; --fg-3: #5a6879;
+    --accent: #5eead4; --accent-dim: #2dd4bf33; --accent-line: #2dd4bf55;
+    --ok: #34d399; --warn: #fbbf24; --new: #a78bfa; --risk: #f87171;
+    --line-0: #1e293b; --line-1: #273449; --line-2: #334155;
+    --grid-color: #1e293b55;
+    --font-display: 'Space Grotesk', -apple-system, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+    --font-body: -apple-system, BlinkMacSystemFont, "Noto Sans CJK SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+  }
+  .page-wrap { max-width: 1080px; margin: 0 auto; padding: var(--sp-5) var(--sp-6) var(--sp-8); }
+
+  /* 蓝图页眉 */
+  .drawing-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--sp-3) 0;
+    border-bottom: 1px solid var(--line-1);
+    font-family: var(--font-mono); font-size: 11px; color: var(--fg-3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    position: sticky; top: 0;
+    background: rgba(10, 14, 20, 0.92);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    margin-bottom: var(--sp-7);
+  }
+  .drawing-header .left, .drawing-header .right { display: flex; gap: var(--sp-5); align-items: center; }
+  .drawing-header .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ok); display: inline-block;
+    box-shadow: 0 0 8px var(--ok);
+  }
+
+  /* Hero */
+  .hero { text-align: center; padding: var(--sp-8) 0 var(--sp-6); }
+  .hero h1 { font-family: var(--font-display); font-size: 52px; font-weight: 700; color: var(--fg-0); letter-spacing: 0.02em; line-height: 1.15; }
+  .hero h1 span { color: var(--accent); }
+  .hero .slogan { color: var(--fg-2); font-size: 17px; margin-top: var(--sp-4); max-width: 46ch; margin-left: auto; margin-right: auto; }
+  .hero .badges { margin-top: var(--sp-5); }
+  .badge {
+    display: inline-block; margin: 0 6px; padding: 4px 14px;
+    border: 1px solid var(--line-2); border-radius: 999px;
+    font-family: var(--font-mono); font-size: 12px; color: var(--fg-2);
+  }
+  .badge.b { color: var(--accent); border-color: var(--accent-line); }
+
+  /* 区块标题 */
+  .section-title {
+    font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--fg-0);
+    margin: var(--sp-7) 0 var(--sp-4);
+    padding-bottom: var(--sp-2);
+    border-bottom: 1px solid var(--line-1);
+    position: relative;
+  }
+  .section-title::before {
+    content: ''; position: absolute; left: 0; bottom: -1px;
+    width: 64px; height: 2px; background: var(--accent);
+  }
+  .section-title .sub { display: block; font-size: 12px; font-weight: 400; color: var(--fg-3); font-family: var(--font-mono); letter-spacing: 0.06em; margin-bottom: 4px; }
+
+  /* KPI */
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .kpi-card { background: var(--bg-1); border: 1px solid var(--line-1); border-left: 3px solid var(--accent); border-radius: 8px; padding: var(--sp-4) var(--sp-5); }
+  .kpi-card .kpi-num { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--fg-0); }
+  .kpi-card .kpi-num small { font-size: 14px; color: var(--fg-3); font-weight: 400; }
+  .kpi-card .kpi-label { font-size: 12px; color: var(--fg-2); margin-top: 4px; letter-spacing: 0.04em; }
+
+  /* 卡片 */
+  .card { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-5); transition: border-color 0.2s, transform 0.2s; }
+  .card:hover { border-color: var(--accent-line); transform: translateY(-2px); }
+  .card h3 { color: var(--fg-0); font-family: var(--font-display); margin-bottom: var(--sp-3); }
+  .card p { color: var(--fg-2); font-size: 14px; }
+  .lead { border-left: 3px solid var(--accent); padding: var(--sp-3) var(--sp-4); background: var(--accent-dim); color: var(--fg-0); font-size: 15px; margin: var(--sp-4) 0; border-radius: 0 6px 6px 0; }
+
+  /* 方法论卡 */
+  .flow-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sp-4); margin: var(--sp-5) 0; }
+  .flow-step { background: var(--bg-1); border: 1px solid var(--line-1); border-radius: 10px; padding: var(--sp-4) var(--sp-5); }
+  .flow-step .step-no { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: var(--sp-2); display: block; }
+  .flow-step h4 { color: var(--fg-0); font-family: var(--font-display); font-size: 15px; margin-bottom: var(--sp-2); }
+  .flow-step p { color: var(--fg-2); font-size: 13px; }
+
+  /* 表格 */
+  .data-table { width: 100%; border-collapse: collapse; margin: var(--sp-4) 0; font-size: 14px; }
+  .data-table th { background: var(--bg-3); color: var(--accent); font-family: var(--font-mono); font-size: 12px; text-align: left; padding: 10px 14px; border: 1px solid var(--line-1); letter-spacing: 0.04em; }
+  .data-table td { padding: 10px 14px; border: 1px solid var(--line-1); color: var(--fg-1); }
+  .data-table tr:nth-child(even) td { background: var(--bg-1); }
+
+  /* 列表 */
+  .list { list-style: none; margin: var(--sp-4) 0; }
+  .list li { position: relative; padding: 0 0 var(--sp-4) var(--sp-5); border-left: 1px solid var(--line-2); color: var(--fg-1); }
+  .list li::before { content: ''; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .list li b { color: var(--fg-0); }
+  .list li .ds { color: var(--fg-2); font-size: 13.5px; margin-top: 2px; display: block; }
+
+  /* 标签 */
+  .tag { display: inline-block; padding: 2px 12px; border: 1px solid var(--accent-line); border-radius: 999px; font-size: 12px; font-family: var(--font-mono); color: var(--accent); background: var(--accent-dim); margin: 2px 4px 2px 0; }
+  .tag.plain { border-color: var(--line-2); color: var(--fg-2); background: transparent; }
+
+  /* 时间轴 */
+  .timeline { list-style: none; margin-top: var(--sp-4); }
+  .timeline li { position: relative; padding: 0 0 var(--sp-5) var(--sp-6); border-left: 1px solid var(--line-2); }
+  .timeline li::before { content: ''; position: absolute; left: -5px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .timeline li.done::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+  .timeline .t-phase { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); }
+  .timeline .t-title { color: var(--fg-0); font-weight: 600; }
+  .timeline .t-desc { color: var(--fg-2); font-size: 13px; margin-top: 2px; }
+
+  .foot { text-align: center; margin-top: var(--sp-8); font-family: var(--font-mono); font-size: 11px; color: var(--fg-3); }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 34px; }
+    .page-wrap { padding: var(--sp-4); }
+    .section-title { font-size: 19px; }
+    .flow-steps { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- 蓝图页眉 -->
+  <div class="drawing-header">
+    <div class="left"><span>Capability Portfolio</span><span class="status-dot"></span><span>本地留存 · 量级口径</span></div>
+    <div class="right"><span>No. 01 · RAG 平台工程</span></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>企业私有化知识平台<br><span>工程落地与建设</span></h1>
+    <p class="slogan">面向企业与机构、以知识检索与生成为核心的私有化 AI 平台——把分散在企业各处的私有知识，加工成大模型可以准确检索、问答与执行任务的知识底座。</p>
+    <div class="badges">
+      <span class="badge b">企业级 · 私有化</span>
+      <span class="badge">RAG 知识底座</span>
+      <span class="badge">整体工程落地</span>
+      <span class="badge">产品化交付</span>
+    </div>
+  </section>
+
+  <!-- 关键指标 -->
+  <section>
+    <h2 class="section-title"><span class="sub">01 · KEY METRICS</span>关键指标</h2>
+    <div class="kpi-strip">
+      <div class="kpi-card"><div class="kpi-num">数千<small> 源文件</small></div><div class="kpi-label">大型工程规模</div></div>
+      <div class="kpi-card"><div class="kpi-num">数十万行<small> 代码</small></div><div class="kpi-label">工程体量</div></div>
+      <div class="kpi-card"><div class="kpi-num">多轮<small> 迭代</small></div><div class="kpi-label">增量演进</div></div>
+      <div class="kpi-card delta"><div class="kpi-num">端到端<small> 链路</small></div><div class="kpi-label">知识工程全流程</div></div>
+    </div>
+  </section>
+
+  <!-- 工作定位 -->
+  <section>
+    <h2 class="section-title"><span class="sub">02 · POSITION</span>工作定位</h2>
+    <div class="card">
+      <p>面向大型复杂工程体系，完成企业级<b style="color:var(--fg-0)">产品化建设与整体落地</b>。工作覆盖全链路：架构认知、体系重构、能力增强与产品化交付，把一套庞大代码体系演进为可交付、可运维、可扩展的企业级系统。</p>
+      <div class="lead">工程的核心不是写更多代码，而是让一套庞大代码体系按照产品逻辑重新组织起来，并保证它在企业环境里真正跑得稳。</div>
+    </div>
+  </section>
+
+  <!-- 工程方法论 -->
+  <section>
+    <h2 class="section-title"><span class="sub">03 · METHODOLOGY</span>工程方法论</h2>
+    <p style="color:var(--fg-2); margin-bottom:var(--sp-3);">贯穿工程过程的思考方式——与具体业务无关，是可迁移的工程能力。</p>
+    <div class="flow-steps">
+      <div class="flow-step"><span class="step-no">M-01</span><h4>先建认知，再动代码</h4><p>面对数万行级陌生代码库，先做架构梳理与模块边界测绘，建立「数据怎么流、模块怎么依赖」的整体认知，再决定动哪里、不动哪里。</p></div>
+      <div class="flow-step"><span class="step-no">M-02</span><h4>增量演进，不推倒重来</h4><p>保留稳定内核，隔离变更面。每一次变更收敛在明确边界内，旧行为可回退、新能力可验证。</p></div>
+      <div class="flow-step"><span class="step-no">M-03</span><h4>知识工程全链路认知</h4><p>对「解析 → 切片 → 向量化 → 检索 → 生成」完整链路有系统性理解：质量在每个环节传递。</p></div>
+      <div class="flow-step"><span class="step-no">M-04</span><h4>企业化适配思维</h4><p>私有化部署、信创环境兼容、多环境可迁移、配置化运行。所有设计都面向真实企业约束。</p></div>
+      <div class="flow-step"><span class="step-no">M-05</span><h4>质量闭环，评测驱动</h4><p>建立自动化测试与基准评测机制，让每一次改动都有可复现的验证手段，效果用数字说话。</p></div>
+      <div class="flow-step"><span class="step-no">M-06</span><h4>产品化交付</h4><p>从「能跑的代码」到「可交付的系统」：配置化、文档化、容器化、可运维。交付的是产品，不是代码。</p></div>
+    </div>
+  </section>
+
+  <!-- 实际产出 -->
+  <section>
+    <h2 class="section-title"><span class="sub">04 · OUTPUT</span>实际产出与价值</h2>
+    <ul class="list">
+      <li><b>整体工程落地</b><span class="ds">在大型工程体系之上完成企业级建设与落地，使系统从「研究型工程」演进为「可交付型产品」，覆盖知识入库、检索问答、自动工作流的完整链路。</span></li>
+      <li><b>稳定性与可用性提升</b><span class="ds">通过架构梳理与边界收敛降低改动风险；通过测试与评测机制，让多轮迭代不回归、可验证。</span></li>
+      <li><b>交付物成套</b><span class="ds">产出部署方案、运行配置、使用文档、演示材料在内的完整交付资产，满足企业验收与后续维护需要。</span></li>
+      <li><b>可扩展的产品基础</b><span class="ds">演进后的体系支持按企业场景扩展知识来源、问答形态与工作流组合，具备持续演进的工程基础。</span></li>
+    </ul>
+  </section>
+
+  <!-- 技术栈 -->
+  <section>
+    <h2 class="section-title"><span class="sub">05 · TECH STACK</span>通用技术栈与工程素养</h2>
+    <p style="color: var(--fg-2); margin-bottom: var(--sp-3);">以下为业界通用的技术方法论与专业术语，用于说明工程能力所覆盖的广度与深度，均为可迁移的通用能力表达。</p>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <span class="step-no">MODEL & RETRIEVAL</span>
+        <h4 style="margin: 6px 0;">模型与检索链路</h4>
+        <p style="font-size: 12.5px;">Chat / Embedding / Rerank 三类模型统一接入与中央配置，多模型异构兼容、可切换、可回退；理解「解析 → 切片 → 向量化 → 检索 → 重排 → 生成」全链路，质量在每个环节传递。</p>
+      </div>
+      <div class="flow-step">
+        <span class="step-no">GOVERNANCE</span>
+        <h4 style="margin: 6px 0;">架构与治理</h4>
+        <p style="font-size: 12.5px;">高弹性、高容错、可扩展、可治理四维架构原则；模块收敛 + 权限收敛，三级角色、部门级知识隔离、登录与操作双审计日志、敏感信息全配置化（非硬编码）。</p>
+      </div>
+      <div class="flow-step">
+        <span class="step-no">INFRASTRUCTURE</span>
+        <h4 style="margin: 6px 0;">基础设施与工程化</h4>
+        <p style="font-size: 12.5px;">容器化部署、基础设施即代码、一键脚本化部署；中间件高可用（全文检索切片、缓存哨兵 / 集群、数据库集群），独立发布、独立扩缩容、故障隔离，支持信创与私有化离线交付。</p>
+      </div>
+      <div class="flow-step">
+        <span class="step-no">AI ORCHESTRATION</span>
+        <h4 style="margin: 6px 0;">AI 编排方法论</h4>
+        <p style="font-size: 12.5px;">方法论技能 + 编排工作流：阶段划分、产出物落盘、验收门、质量审计；全流程可回看、可复现、可审计，评测与基准驱动迭代。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 能力素养 -->
+  <section>
+    <h2 class="section-title"><span class="sub">06 · CAPABILITY</span>能力与技术素养</h2>
+    <div style="margin: var(--sp-4) 0;">
+      <span class="tag">后端工程</span><span class="tag">前端工程</span><span class="tag">数据与向量检索</span><span class="tag">容器化与部署</span><span class="tag">AI / RAG 工程</span><span class="tag">信创与私有化</span>
+      <span class="tag plain">架构梳理</span><span class="tag plain">增量演进</span><span class="tag plain">评测与基准</span><span class="tag plain">自动化测试</span><span class="tag plain">文档化交付</span>
+    </div>
+    <div class="card">
+      <p>能够独立面对一套数万行级、结构复杂的工程，完成从「认知」到「落地」到「交付」的全过程；能够把抽象的企业需求翻译为具体的工程动作，并让结果可验证、可运维、可演进。</p>
+    </div>
+  </section>
+
+  <!-- 档案说明 -->
+  <section>
+    <h2 class="section-title"><span class="sub">07 · NOTE</span>档案说明</h2>
+    <div class="card">
+      <p>本档案为工程能力与思维方法的表达，只陈述通用方法论与可迁移能力，不包含项目内部的功能细节、实现结构或专属信息；所有规模类描述均为量级口径，不涉及精确数据。</p>
+    </div>
+  </section>
+
+  <p class="foot">CAPABILITY PORTFOLIO · 本地留存 · 通用方法论表达</p>
+</div>
+</body>
+</html>
