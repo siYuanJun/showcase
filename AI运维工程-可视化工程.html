@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>智答客 · 工程能力档案</title>
+<title>AI 运维工程 · 可视化工程</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -58,7 +58,7 @@
   .hero { text-align: center; padding: var(--sp-8) 0 var(--sp-6); }
   .hero h1 { font-family: var(--font-display); font-size: 52px; font-weight: 700; color: var(--fg-0); letter-spacing: 0.02em; line-height: 1.15; }
   .hero h1 span { color: var(--accent); }
-  .hero .slogan { color: var(--fg-2); font-size: 17px; margin-top: var(--sp-4); max-width: 52ch; margin-left: auto; margin-right: auto; }
+  .hero .slogan { color: var(--fg-2); font-size: 17px; margin-top: var(--sp-4); max-width: 56ch; margin-left: auto; margin-right: auto; }
   .hero .badges { margin-top: var(--sp-5); }
   .badge {
     display: inline-block; margin: 0 6px; padding: 4px 14px;
@@ -99,15 +99,6 @@
   .flow-step h4 { color: var(--fg-0); font-family: var(--font-display); font-size: 15px; margin-bottom: var(--sp-2); }
   .flow-step p { color: var(--fg-2); font-size: 13px; }
 
-  .timeline { list-style: none; margin-top: var(--sp-4); }
-  .timeline li { position: relative; padding: 0 0 var(--sp-5) var(--sp-6); border-left: 1px solid var(--line-2); }
-  .timeline li::before { content: ''; position: absolute; left: -5px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-  .timeline li.done::before { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
-  .timeline li.next::before { background: var(--new); box-shadow: 0 0 8px var(--new); }
-  .timeline .t-phase { font-family: var(--font-mono); font-size: 12px; color: var(--fg-3); }
-  .timeline .t-title { color: var(--fg-0); font-weight: 600; }
-  .timeline .t-desc { color: var(--fg-2); font-size: 13px; margin-top: 2px; }
-
   .list { list-style: none; margin: var(--sp-4) 0; }
   .list li { position: relative; padding: 0 0 var(--sp-4) var(--sp-5); border-left: 1px solid var(--line-2); color: var(--fg-1); }
   .list li::before { content: ''; position: absolute; left: -4px; top: 6px; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
@@ -133,18 +124,18 @@
   <!-- 蓝图页眉 -->
   <div class="drawing-header">
     <div class="left"><span>Capability Portfolio</span><span class="status-dot"></span><span>本地留存 · 量级口径</span></div>
-    <div class="right"><span>No. 02 · AI 客服平台</span></div>
+    <div class="right"><span>No. 04 · AI 运维工程</span></div>
   </div>
 
   <!-- Hero -->
   <section class="hero">
-    <h1>智答客<br><span>私有化 AI 客服系统</span></h1>
-    <p class="slogan">基于大语言模型与知识库的企业级私有化智能客服系统，通过检索增强生成（RAG）提升问答质量与效率——把企业知识变成可靠的自动应答能力。</p>
+    <h1>AI 运维工程<br><span>智能体驱动的交付体系</span></h1>
+    <p class="slogan">面向企业私有化 AI 应用的全链路交付运维体系——由 AI 智能体团队全流程驱动：规划、实现、验证、留痕、验收，把「部署一个 AI 应用」变成可照单执行、可追溯、可复用的工程化流水线。</p>
     <div class="badges">
-      <span class="badge b">从 0 到 1 · 全栈</span>
-      <span class="badge">RAG 知识检索</span>
-      <span class="badge">流式应答</span>
-      <span class="badge">对外 SDK</span>
+      <span class="badge b">AI Harness 驱动</span>
+      <span class="badge">信创化交付</span>
+      <span class="badge">LLM 能力层</span>
+      <span class="badge">全链路留痕</span>
     </div>
   </section>
 
@@ -152,10 +143,10 @@
   <section>
     <h2 class="section-title"><span class="sub">01 · KEY METRICS</span>关键指标</h2>
     <div class="kpi-strip">
-      <div class="kpi-card"><div class="kpi-num">约 300<small> 源文件</small></div><div class="kpi-label">全栈工程规模</div></div>
-      <div class="kpi-card"><div class="kpi-num">4 万余行<small> 代码</small></div><div class="kpi-label">独立开发量级</div></div>
-      <div class="kpi-card"><div class="kpi-num">200 余次<small> 提交</small></div><div class="kpi-label">持续迭代</div></div>
-      <div class="kpi-card delta"><div class="kpi-num">30 余个<small> 测试文件</small></div><div class="kpi-label">质量保障</div></div>
+      <div class="kpi-card"><div class="kpi-num">700 余<small> 交付文件</small></div><div class="kpi-label">工程规模</div></div>
+      <div class="kpi-card"><div class="kpi-num">近 9 万行<small> 工程资产</small></div><div class="kpi-label">脚本与文档</div></div>
+      <div class="kpi-card"><div class="kpi-num">百余<small> 运维脚本</small></div><div class="kpi-label">自动化工具</div></div>
+      <div class="kpi-card delta"><div class="kpi-num">3 编排器<small> × 多智能体</small></div><div class="kpi-label">Harness 团队</div></div>
     </div>
   </section>
 
@@ -163,63 +154,52 @@
   <section>
     <h2 class="section-title"><span class="sub">02 · POSITION</span>项目定位</h2>
     <div class="card">
-      <p>面向企业的<b style="color:var(--fg-0)">私有化智能客服平台</b>：大模型对话 + 多来源知识库检索，支持文档知识入库、精准问答、流式响应与多轮会话，并提供可嵌入对外业务的客服 SDK，形成「知识 → 检索 → 应答 → 集成」的完整闭环。</p>
-      <div class="lead">从零独立设计、开发与交付——覆盖后端服务、前端应用、知识库与向量检索、对外 SDK 的完整产品。</div>
+      <p>企业私有化 AI 应用的<b style="color:var(--fg-0)">交付与运维工程</b>：覆盖应用部署（测试单机 / 生产集群）、中间件离线交付（搜索引擎 / 缓存 / 国产分布式数据库）、运维知识库与验收闭环——目标是「照单部署、不迷路」。</p>
+      <div class="lead">这不是一份部署文档，而是一套由 AI 智能体团队持续运转的交付体系——每一个交付物背后都有规划、门控、留痕与验收。</div>
     </div>
   </section>
 
   <!-- 工程方法论 -->
   <section>
     <h2 class="section-title"><span class="sub">03 · METHODOLOGY</span>工程方法论</h2>
-    <p style="color:var(--fg-2); margin-bottom:var(--sp-3);">贯穿项目全过程的思考方式——可迁移、可复用，与具体业务解耦。</p>
+    <p style="color:var(--fg-2); margin-bottom:var(--sp-3);">贯穿整个工程的方法论——由 AI 智能体团队执行、沉淀、复用。</p>
     <div class="flow-steps">
-      <div class="flow-step"><span class="step-no">M-01</span><h4>RAG 全链路工程化</h4><p>对「文档解析 → 切片 → 向量化 → 检索 → 问题改写 → 生成」完整链路做工程化设计：每一环都可观测、可调优。</p></div>
-      <div class="flow-step"><span class="step-no">M-02</span><h4>多来源知识统一抽象</h4><p>将不同来源的知识库抽象为统一检索接口，业务侧无感切换；本地向量库与云端知识服务并存，兼顾数据自主与扩展。</p></div>
-      <div class="flow-step"><span class="step-no">M-03</span><h4>产品化与 SDK 思维</h4><p>不止做「能聊天的系统」，还产出对外可嵌入的客服 SDK 与生成器页面——把能力封装为可集成、可配置的产品形态。</p></div>
-      <div class="flow-step"><span class="step-no">M-04</span><h4>可靠性设计</h4><p>流式响应全链路、重试机制、并发控制、会话安全与健康探活——让系统在真实负载下可用、可监控、可恢复。</p></div>
-      <div class="flow-step"><span class="step-no">M-05</span><h4>测试与文档双驱动</h4><p>多套自动化测试保障行为稳定；文档与代码同步演进，让系统可接手、可维护、可交付。</p></div>
-      <div class="flow-step"><span class="step-no">M-06</span><h4>容器化交付</h4><p>基于容器编排的整体交付，配套健康检查与配置化运行，简化部署与迁移成本。</p></div>
+      <div class="flow-step"><span class="step-no">M-01</span><h4>Harness 团队驱动</h4><p>多编排器分工（部署工程 / 问题分流 / 开发）+ 多智能体角色（架构师 / 脚本工程师 / 日志专家 / QA / 验收工程师）。请求先分类、再走对应流水线，禁止绕过编排直接动手。</p></div>
+      <div class="flow-step"><span class="step-no">M-02</span><h4>流水线门控</h4><p>规划 → 实现 → 验证 → 验收，每一阶段设置质量门；产物落工作区、可复查，QA 门控不通过不进入下一阶段。</p></div>
+      <div class="flow-step"><span class="step-no">M-03</span><h4>全链路留痕</h4><p>服务器与容器操作强制逐条留痕（命令 + 返回 + 解读），「盲盒日志」机制保障无现场可视化时的排障闭环——行为可回溯，问题可定位。</p></div>
+      <div class="flow-step"><span class="step-no">M-04</span><h4>离线交付思维</h4><p>中间件封装为「一键部署 + 一键验收 + 一键打包」三件套：内网可导入、可运行、可核对——信创环境的工程化答案。</p></div>
+      <div class="flow-step"><span class="step-no">M-05</span><h4>知识沉淀</h4><p>避坑知识库、运维手册、容量规划、上线核对清单——把个人踩坑经验沉淀为组织可复用的知识资产。</p></div>
+      <div class="flow-step"><span class="step-no">M-06</span><h4>一致性治理</h4><p>跨文档冲突按既有裁决优先级执行，禁止「协商解决」——把工程规范变成可执行、可校验的硬规则。</p></div>
     </div>
   </section>
 
-  <!-- 演进时间轴 -->
+  <!-- AI 能力层 -->
   <section>
-    <h2 class="section-title"><span class="sub">04 · ROADMAP</span>项目演进</h2>
-    <ul class="timeline">
-      <li class="done">
-        <div class="t-phase">PHASE 1 · 已交付</div>
-        <div class="t-title">全栈骨架与对话链路</div>
-        <div class="t-desc">后端服务 + 前端应用 + 对话核心链路打通，流式应答与多轮会话可用</div>
-      </li>
-      <li class="done">
-        <div class="t-phase">PHASE 2 · 已交付</div>
-        <div class="t-title">知识库与 RAG 落地</div>
-        <div class="t-desc">多来源知识接入、文档处理与向量检索，问题改写提升命中质量</div>
-      </li>
-      <li class="done">
-        <div class="t-phase">PHASE 3 · 已交付</div>
-        <div class="t-title">产品化与 SDK</div>
-        <div class="t-desc">对外客服 SDK 与生成器页面，能力封装为可嵌入、可配置的产品形态</div>
-      </li>
-      <li class="done">
-        <div class="t-phase">PHASE 4 · 持续</div>
-        <div class="t-title">体验打磨与工程加固</div>
-        <div class="t-desc">高频迭代集中在对话、入口与核心组件——围绕用户体验持续演进</div>
-      </li>
+    <h2 class="section-title"><span class="sub">04 · AI CAPABILITY</span>AI 与 LLM 能力层</h2>
+    <div class="card">
+      <p>本工程以<b style="color:var(--fg-0)">大模型能力为底座</b>，构建面向运维场景的智能体体系，LLM 贯穿工程执行与运维决策的多个环节：</p>
+    </div>
+    <ul class="list">
+      <li><b>智能体编排</b><span class="ds">LLM 驱动的多智能体团队（分析 / 设计 / 实现 / 验证 / 验收），按领域编排器分工协作，自主完成从需求到交付物的全流程。</span></li>
+      <li><b>智能排障与语义分析</b><span class="ds">结合日志留痕机制，对故障信息进行语义级理解与归类，辅助定位问题根因，形成排障闭环。</span></li>
+      <li><b>运维知识问答</b><span class="ds">基于运维手册与避坑知识库的知识底座，支持以自然语言获取部署指引、核对事项与处置建议。</span></li>
+      <li><b>方案与文档生成</b><span class="ds">由智能体按统一规范生成部署方案、运维文档、验收报告，内容口径一致、可直接执行。</span></li>
+      <li><b>模型无关设计</b><span class="ds">能力层走兼容协议接入，模型可替换、可离线，不绑定单一厂商，适配内网与信创环境约束。</span></li>
     </ul>
   </section>
 
-  <!-- 能力素养 -->
+  <!-- 能力主张 -->
   <section>
     <h2 class="section-title"><span class="sub">05 · CAPABILITY</span>能力与技术素养</h2>
     <div style="margin: var(--sp-4) 0;">
-      <span class="tag">后端服务</span><span class="tag">前端应用</span><span class="tag">RAG / 向量检索</span><span class="tag">大模型接入</span><span class="tag">对外 SDK</span><span class="tag">容器化</span>
-      <span class="tag plain">认证与安全</span><span class="tag plain">流式处理</span><span class="tag plain">缓存与队列</span><span class="tag plain">数据库设计</span>
+      <span class="tag">AI 工程化组织</span><span class="tag">多 Agent 编排</span><span class="tag">LLM 集成</span><span class="tag">信创交付</span><span class="tag">中间件交付</span><span class="tag">容器化部署</span>
+      <span class="tag plain">K8s 集群</span><span class="tag plain">镜像治理</span><span class="tag plain">留痕审计</span><span class="tag plain">知识库建设</span><span class="tag plain">验收体系</span>
     </div>
     <ul class="list">
-      <li><b>全栈独立交付</b><span class="ds">后端接口、前端界面、知识库链路、SDK 全部独立完成，单人多线推进（前后端投入相当）。</span></li>
-      <li><b>对话体验打磨</b><span class="ds">流式输出、多轮上下文、问题改写提升检索命中——把「答得出」做成「答得准、答得快」。</span></li>
-      <li><b>工程素养沉淀</b><span class="ds">十余类工程方法论贯穿开发，其中半数以上有代码与文档双重印证（测试先行、接口契约、分层架构、可观测性等）。</span></li>
+      <li><b>AI 从工具到工程</b><span class="ds">把 AI 智能体组织为可编排、可治理、可复用的工程流水线——诊断、设计、实现、验证、验收角色分离，门控与留痕贯穿始终。</span></li>
+      <li><b>大型交付工程落地</b><span class="ds">七百余文件、近九万行的交付工程：应用部署、中间件离线交付、运维知识库、验收体系一体化交付。</span></li>
+      <li><b>LLM × 运维融合</b><span class="ds">将大模型能力接入工程执行与运维决策链路：智能体编排、语义排障、知识问答、方案生成，模型无关、可离线。</span></li>
+      <li><b>信创环境适配</b><span class="ds">离线交付三件套、内网部署、国产化组件支持——在受限环境里交付可运行、可验收、可运维的完整体系。</span></li>
     </ul>
   </section>
 
@@ -227,7 +207,7 @@
   <section>
     <h2 class="section-title"><span class="sub">06 · NOTE</span>档案说明</h2>
     <div class="card">
-      <p>本档案为能力与思维方法的表达；所有规模与频次均为量级口径，不涉及精确数据；代码本体保持私有。</p>
+      <p>本档案为工程能力与思维方法的表达；所有规模与数量均为量级口径，不涉及精确数据；不包含项目内部实现细节、组件名称与专属信息；代码本体保持私有。</p>
     </div>
   </section>
 
